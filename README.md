@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.5 REPAIRED + ART
+# ABYSSAL HAND 404 — 1.0.0-rc.6 QUICK GUIDE
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -14,7 +14,13 @@ También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario so
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
 
-## Qué se ha reparado
+## Qué incluye rc.6
+
+- Guía rápida desplegable dentro de la partida: reglas de selección, diferencia entre manos y descartes, condiciones de derrota y referencia de puntuación.
+- La guía permanece cerrada al cargar para no reducir el espacio de juego; usa elementos HTML nativos y funciona con teclado/móvil.
+- Nueva revisión de caché y rutas CSS para que GitHub Pages y la PWA recojan la guía al actualizar.
+
+## Qué se reparó en rc.5
 
 - Los módulos ES impedían el arranque desde `file://`: se entrega `js/app.bundle.js` clásico ya construido.
 - Nueva expedición repetía las mismas cartas y esperaba al borrado de IndexedDB: ahora reinicia inmediatamente con una semilla nueva por defecto.
@@ -31,9 +37,9 @@ Cinco ilustraciones nuevas de 1536 × 1024: Puerto Ahogado panorámico, Ciudad I
 
 ## Evidencia
 
-`evidence/browser-results.json`: 30 comprobaciones ejecutadas mediante Playwright en Chromium 131.0.6778.204, con clics reales, descargas, selector de archivos, teclado, HTTP en subruta, file://, viewport móvil de 390 px, almacenamiento bloqueado y offline con Service Worker real. Cero errores de consola/recursos en esos recorridos.
+`evidence/browser-results.json`: evidencia heredada de rc.5 con 30 comprobaciones ejecutadas mediante Playwright en Chromium 131.0.6778.204, con clics reales, descargas, selector de archivos, teclado, HTTP en subruta, file://, viewport móvil de 390 px, almacenamiento bloqueado y offline con Service Worker real. Cero errores de consola/recursos en esos recorridos.
 
-`evidence/upgrade-results.json`: prueba adicional de actualización desde rc.4 con Service Worker existente. Capturas de escritorio y móvil incluidas. Detalle de causas y límites en `QA-REPORT.md`.
+`evidence/upgrade-results.json`: evidencia heredada de rc.5 para prueba adicional de actualización desde rc.4 con Service Worker existente. Capturas de escritorio y móvil incluidas. Detalle de causas y límites en `QA-REPORT.md`.
 
 ## Desarrollo
 
@@ -46,7 +52,7 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.5`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.6 · QUICK GUIDE`.
 
 ## Alcance
 

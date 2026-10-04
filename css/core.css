@@ -99,3 +99,18 @@ button:focus-visible,.card:focus-visible,.node-btn:focus-visible,.mini-btn:focus
 
 .seed-panel{margin-top:14px}
 @media(max-width:800px){.seed-hud{display:block!important;font-size:.66rem!important}}
+
+/* Quick rules: available at a glance without crowding the card table. */
+.quick-guide{max-width:920px;margin:0 auto 12px;border:1px solid var(--c64-purple);background:#0c0a18eF;color:#e9e5ff}
+.quick-guide summary{cursor:pointer;list-style:none;padding:10px 14px;color:var(--c64-yellow);font-weight:800;letter-spacing:.08em;font-size:.75rem}
+.quick-guide summary::-webkit-details-marker{display:none}
+.quick-guide summary::after{content:'＋';float:right;color:var(--c64-cyan)}
+.quick-guide[open] summary::after{content:'−'}
+.quick-guide summary:focus-visible{outline:2px solid var(--c64-cyan);outline-offset:2px}
+.guide-content{padding:0 16px 14px;font-size:.8rem;line-height:1.55;color:#d6cffa}
+.guide-content ol{padding-left:22px;margin:0 0 8px}.guide-content li{margin:4px 0}
+.guide-content>p{margin:8px 0}.guide-content strong{color:#fff}
+.hand-reference{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 16px;list-style:none;padding:10px 0;margin:0;border-top:1px solid #5e53a866;border-bottom:1px solid #5e53a866}
+.hand-reference li{display:flex;justify-content:space-between;gap:8px}.hand-reference span{color:var(--c64-cyan);white-space:nowrap}
+.guide-note{color:#aaa2ce;font-size:.72rem}
+@media(max-width:600px){.guide-content{font-size:.75rem;padding:0 12px 12px}.hand-reference{grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px}}

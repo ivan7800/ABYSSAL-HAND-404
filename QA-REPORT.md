@@ -1,3 +1,19 @@
+# QA — ABYSSAL HAND 404 rc.6
+
+## Cambios de esta revisión
+
+- Se añadió una guía rápida desplegable en la pantalla principal con selección de cartas, diferencia entre jugar y descartar, derrota por falta de manos/locura y valores base de las combinaciones.
+- Se conserva cerrada al inicio; usa `<details>/<summary>` nativos, texto semántico, foco visible y rejilla responsive.
+- Se versionaron URLs de CSS/JS y caché PWA a rc.6 para evitar que el despliegue reciba estilos antiguos.
+
+## Verificación rc.6
+
+- `npm run build`: PASS; generó el bundle desde 21 módulos locales.
+- `npm test`: PASS; 14 comprobaciones de endurecimiento y guía, 34 comprobaciones de botones/acciones, suites de puntuación, progresión, guardado, PWA, arte y regresiones.
+- Publicación rc.5: se probaron en Chrome selección, habilitación de JUGAR, jugar una carta (puntos 0→15, manos 4→3), descarte (5→4) y apertura de Códice.
+- La automatización Playwright de esta rc.6 no pudo ejecutarse en el entorno de build: el servidor local solo arrancó con permiso ampliado y después faltó el ejecutable Chromium de Playwright. No se declara como prueba superada.
+- No se probó la guía rc.6 en un navegador real desde esta build; su contenido y estructura se verifican mediante test de regresión y análisis estático.
+
 # QA — ABYSSAL HAND 404 rc.5
 
 Navegador: Chromium 131.0.6778.204. Ejecución: 2026-10-04T21:54:42.427Z.

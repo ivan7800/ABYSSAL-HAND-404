@@ -1,5 +1,13 @@
 # Historial
 
+
+## 1.0.0-rc.6 — QUICK GUIDE
+
+- Added an expandable Spanish rules guide beside the play controls.
+- Explained selection, hands versus discards, objective/Locura loss conditions, encounter routes, and hand scoring values.
+- Kept the guide collapsed by default; keyboard accessible and responsive, with no new runtime dependencies.
+- Bumped asset URLs and Service Worker cache to rc.6 to avoid stale CSS and HTML after GitHub Pages updates.
+
 ## 1.0.0-rc.5 — REPAIRED + ART
 
 - Primera entrega de esta sesión con evidencia de clics reales en Chromium.

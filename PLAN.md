@@ -1,4 +1,13 @@
-# Estado de entrega — 1.0.0-rc.5
+# Estado de entrega — 1.0.0-rc.6
+
+## rc.6 — guía rápida integrada
+
+- [x] Añadir reglas desplegables y tabla de puntuación.
+- [x] Versionar CSS, JS y caché de Service Worker para GitHub Pages/PWA.
+- [x] Pasar suite funcional y añadir comprobación de la guía.
+- [ ] Repetir batería de navegador Chromium cuando exista un ejecutable local disponible.
+- [ ] Certificar la campaña completa y probar Safari/iPhone e instalación PWA nativa.
+
 
 ## Completado
 - [x] Reproducir rc.4 en Chromium: file:// bloquea módulos; nueva expedición repite semilla; fondos dan 404.
