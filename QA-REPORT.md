@@ -1,4 +1,12 @@
-# QA — ABYSSAL HAND 404 rc.9
+# QA — ABYSSAL HAND 404 rc.10
+
+## rc.10 — escenas de presagio
+
+- Ocho eventos nuevos tienen ocho SVG diferentes; recompensa y rutas usan escenas distintas.
+- El evento de la campaña antigua conserva el arte clásico.
+- Los nuevos SVG se validan como XML, están integrados en el render y figuran en el precache offline.
+- `npm test`: PASS; `npm run build`: PASS (21 módulos). Los 16 SVG de escena se analizaron como XML válido.
+- El recorrido visual completo y el equilibrio de los 32 encuentros siguen pendientes de juego manual.
 
 ## rc.9 — campaña expandida
 

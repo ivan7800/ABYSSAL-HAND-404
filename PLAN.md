@@ -1,4 +1,12 @@
-# Estado de entrega — 1.0.0-rc.9
+# Estado de entrega — 1.0.0-rc.10
+
+## rc.10 — escenas específicas
+
+- [x] Dar una imagen propia a cada uno de los ocho presagios.
+- [x] Evitar la repetición del mapa en la recompensa.
+- [x] Mantener la imagen y acciones de eventos en saves antiguos.
+- [x] Precargar recursos en la PWA y comprobar correspondencia de escenas.
+- [ ] Recorrer manualmente los 32 encuentros para afinar ritmo y dificultad.
 
 ## rc.9 — campaña larga y decisiones
 

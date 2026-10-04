@@ -1,7 +1,7 @@
-const CACHE='abyssal-hand-404-v1.0.0-rc.9-art-pwa-update';
+const CACHE='abyssal-hand-404-v1.0.0-rc.10-event-art';
 const CORE=[
-  './','./index.html','./css/core.css?v=1.0.0-rc.9','./css/core.css','./manifest.webmanifest',
-  './js/app.bundle.js?v=1.0.0-rc.9','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
+  './','./index.html','./css/core.css?v=1.0.0-rc.10','./css/core.css','./manifest.webmanifest',
+  './js/app.bundle.js?v=1.0.0-rc.10','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
   './js/core/game.js','./js/core/rng.js','./js/core/state.js','./js/economy/content.js',
   './js/gameplay/bosses.js','./js/gameplay/meta.js','./js/gameplay/progression.js','./js/gameplay/zones.js',
   './js/meta/codex.js','./js/persistence/meta-store.js','./js/persistence/run-store.js',
@@ -11,7 +11,8 @@ const CORE=[
   './assets/art/sectors/drowned-port.webp','./assets/art/sectors/drowned-port-wide.png','./assets/art/sectors/sunken-library.webp','./assets/art/sectors/moonless-forest.webp','./assets/art/sectors/black-observatory.webp',
  './assets/art/sectors/impossible-city.png','./assets/art/sectors/ash-sea.png','./assets/art/sectors/abyssal-temple.png','./assets/art/sectors/beyond-gate.png',
  './assets/art/entities/blind-astronomer.svg','./assets/art/entities/abyssal-mother.svg','./assets/art/entities/faceless-king.svg','./assets/art/entities/devourer.svg','./assets/art/entities/sleeper.svg','./assets/art/entities/mirror-saint.svg','./assets/art/entities/black-choir.svg','./assets/art/entities/the-gate.svg',
- './assets/art/scenes/tide-refuge.svg','./assets/art/scenes/route-map.svg','./assets/art/scenes/drowned-market.svg','./assets/art/scenes/nameless-altar.svg','./assets/art/scenes/wall-less-door.svg','./assets/art/scenes/beyond-the-gate.svg','./assets/art/scenes/the-last-signal.svg'
+ './assets/art/scenes/tide-refuge.svg','./assets/art/scenes/route-map.svg','./assets/art/scenes/drowned-market.svg','./assets/art/scenes/nameless-altar.svg','./assets/art/scenes/wall-less-door.svg','./assets/art/scenes/beyond-the-gate.svg','./assets/art/scenes/the-last-signal.svg',
+ './assets/art/scenes/echo-cache.svg','./assets/art/scenes/silent-bell.svg','./assets/art/scenes/living-book.svg','./assets/art/scenes/root-crown.svg','./assets/art/scenes/false-sun.svg','./assets/art/scenes/folded-street.svg','./assets/art/scenes/bone-tide.svg','./assets/art/scenes/choir-well.svg','./assets/art/scenes/breathing-gate.svg'
 ];
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')void self.skipWaiting();});
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));});

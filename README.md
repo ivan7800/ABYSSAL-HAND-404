@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.9 CAMPAÑA EXPANDIDA
+# ABYSSAL HAND 404 — 1.0.0-rc.10 ESCENAS DE PRESAGIO
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -15,6 +15,13 @@ En la primera expedición, la guía se abre automáticamente. Al cerrarla, la el
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Qué incluye rc.10
+
+- Ocho ilustraciones nuevas, una para cada presagio de la campaña ampliada.
+- Ilustración propia para la pantalla de recompensa; deja de reutilizar el mapa de rutas.
+- Los saves antiguos conservan la escena clásica de la puerta sin muro y sus opciones.
+- Los nueve SVG nuevos se incluyen en el modo sin conexión y el bundle clásico.
 
 ## Qué incluye rc.9
 
@@ -52,7 +59,7 @@ El guardado depende de los permisos del navegador. Si el almacenamiento está bl
 
 ## Arte
 
-Cinco ilustraciones nuevas de 1536 × 1024: Puerto Ahogado panorámico, Ciudad Imposible, Mar de Ceniza, Templo Abisal y Más Allá de la Puerta. Los ocho sectores tienen fondos distintos. Los recursos se sirven localmente y están incluidos en el modo offline.
+Cinco ilustraciones de sector de 1536 × 1024: Puerto Ahogado panorámico, Ciudad Imposible, Mar de Ceniza, Templo Abisal y Más Allá de la Puerta. Los ocho sectores tienen fondos distintos. Los eventos de rc.10 tienen escenas propias y la recompensa también. Los recursos se sirven localmente y están incluidos en el modo offline.
 
 ## Evidencia
 
@@ -71,7 +78,7 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.9 · CAMPAÑA EXPANDIDA`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.10 · ESCENAS DE PRESAGIO`.
 
 ## Alcance
 

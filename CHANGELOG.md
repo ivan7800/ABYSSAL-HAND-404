@@ -1,5 +1,12 @@
 # Historial
 
+## 1.0.0-rc.10 — ESCENAS DE PRESAGIO
+
+- Ocho relatos de la campaña expandida tienen ahora una ilustración distinta, integrada por ID de evento.
+- La pantalla de recompensa recibe una escena propia; la puerta sin muro permanece para eventos de partidas antiguas.
+- Los nueve SVG se precargan sin conexión; versión de CSS, JS y Service Worker actualizada.
+- Integración de arte comprobada en tests y SVG validados como XML.
+
 ## 1.0.0-rc.9 — CAMPAÑA EXPANDIDA
 
 - La campaña nueva pasa a 32 encuentros distribuidos en cuatro por sector; los saves anteriores mantienen campaña de 24.

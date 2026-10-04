@@ -1,4 +1,13 @@
-# Arte adicional rc.5
+# Arte de ABYSSAL HAND 404
+
+## Escenas rc.10
+
+- Ocho SVG originales identifican los presagios: campana, libro, corona, sol, calle, marea, pozo y puerta.
+- `echo-cache.svg` da identidad a la recompensa; `route-map.svg` queda para elegir senda.
+- El evento clásico de un save antiguo conserva `wall-less-door.svg`.
+- Todo es local, sin dependencias ni fuentes remotas; el Service Worker precarga los recursos.
+
+## Arte anterior
 
 ## Nuevos recursos vectoriales rc.7
 
