@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 const render=read('../js/ui/render.js'),app=read('../js/app.js'),sw=read('../sw.js');
 const bossIds=['blind-astronomer','abyssal-mother','faceless-king','devourer','sleeper','mirror-saint','black-choir','the-gate'];
-const sceneIds=['route-map','drowned-market','nameless-altar','wall-less-door','beyond-the-gate','the-last-signal'];
+const sceneIds=['route-map','drowned-market','nameless-altar','wall-less-door','beyond-the-gate','the-last-signal','tide-refuge'];
 for(const id of bossIds)assert.ok(fs.existsSync(new URL(`../assets/art/entities/${id}.svg`,import.meta.url)),`portrait missing: ${id}`);
 for(const id of sceneIds)assert.ok(fs.existsSync(new URL(`../assets/art/scenes/${id}.svg`,import.meta.url)),`scene missing: ${id}`);
 const mapBody=render.match(/const BOSS_ART=\{([^}]+)\};/)?.[1]||'';

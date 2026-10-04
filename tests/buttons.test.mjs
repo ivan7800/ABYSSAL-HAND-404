@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {newRun,toggleCard,playSelection,discardSelection,claimReward,chooseRoute} from '../js/core/game.js';
-import {buyItem,acceptPact,resolveEvent,continueFromNode,useRitual} from '../js/gameplay/meta.js';
+import {buyItem,acceptPact,resolveEvent,resolveSanctuary,continueFromNode,useRitual} from '../js/gameplay/meta.js';
 import {saveRun,loadRun,exportSave,importSaveText} from '../js/persistence/run-store.js';
 import {createAudioEngine} from '../js/audio/audio.js';
 
@@ -28,8 +28,9 @@ await t('RECOGER RECOMPENSA',()=>{const x=newRun('BUTTON-REWARD');x.screenMode='
 await t('ELEGIR RUTA',()=>{const x=newRun('BUTTON-ROUTE');x.screenMode='route';x.status='choice';x.routeOptions=[{id:'test-battle',type:'battle',name:'TEST',icon:'X'}];const r=chooseRoute(x,'test-battle');assert.equal(r.ok,true);assert.equal(x.screenMode,'battle');});
 await t('COMPRAR EN MERCADO',()=>{const x=newRun('BUTTON-BUY');x.echoes=99;const r=buyItem(x,'bone-die');assert.equal(r.ok,true);assert.ok(x.relics.some(v=>v.id==='bone-die'));});
 await t('ACEPTAR PACTO',()=>{const x=newRun('BUTTON-PACT');const r=acceptPact(x,'blood-pact');assert.equal(r.ok,true);assert.ok(x.pacts.some(v=>v.id==='blood-pact'));});
-await t('EVENTO ABRIR',()=>{const x=newRun('BUTTON-EVENT1');const e=x.echoes;const r=resolveEvent(x,'open');assert.equal(r.ok,true);assert.ok(x.echoes>e);});
-await t('EVENTO IGNORAR',()=>{const x=newRun('BUTTON-EVENT2');x.madness=20;const r=resolveEvent(x,'ignore');assert.equal(r.ok,true);assert.equal(x.madness,15);});
+await t('EVENTO ABRIR',()=>{const x=newRun('BUTTON-EVENT1');x.campaignVersion=1;x.screenMode='event';const e=x.echoes;const r=resolveEvent(x,'open');assert.equal(r.ok,true);assert.ok(x.echoes>e);});
+await t('EVENTO IGNORAR',()=>{const x=newRun('BUTTON-EVENT2');x.campaignVersion=1;x.screenMode='event';x.madness=20;const r=resolveEvent(x,'ignore');assert.equal(r.ok,true);assert.equal(x.madness,15);});
+await t('REFUGIO: descansar reduce Locura',()=>{const x=newRun('BUTTON-SANCTUARY');x.screenMode='sanctuary';x.madness=50;assert.equal(resolveSanctuary(x,'rest').ok,true);assert.equal(x.madness,32);});
 await t('CONTINUAR NODO',()=>{const x=newRun('BUTTON-CONT');const e=x.encounter;const r=continueFromNode(x);assert.equal(r.ok,true);assert.equal(x.encounter,e+1);});
 await t('USAR RITUAL',()=>{const x=newRun('BUTTON-RITUAL');x.madness=40;x.rituals.push({id:'salt-circle',name:'CÍRCULO DE SAL'});const r=useRitual(x,'salt-circle');assert.equal(r.ok,true);assert.equal(x.rituals.length,0);assert.ok(x.madness<40);});
 await t('CÓDICE tiene listener de toggle',()=>assert.match(app,/codexBtn\.addEventListener\('click'/));

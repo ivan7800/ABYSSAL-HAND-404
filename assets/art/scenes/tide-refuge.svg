@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" role="img" aria-labelledby="t d">
+<title id="t">Refugio entre mareas</title><desc id="d">Un santuario de piedra cálida resiste bajo un océano oscuro.</desc>
+<defs><linearGradient id="s" x2="0" y2="1"><stop stop-color="#172658"/><stop offset="1" stop-color="#060914"/></linearGradient><radialGradient id="g"><stop stop-color="#f5e9a7" stop-opacity=".8"/><stop offset="1" stop-color="#eab656" stop-opacity="0"/></radialGradient></defs>
+<path fill="url(#s)" d="M0 0h800v420H0z"/><path fill="#243b74" d="M0 50q100 50 200 0t200 0 200 0 200 0v45q-100-50-200 0t-200 0-200 0-200 0z" opacity=".75"/>
+<circle cx="402" cy="254" r="150" fill="url(#g)"/><path fill="#141225" stroke="#71615b" stroke-width="10" d="M248 390V246q0-154 152-154t152 154v144h-54V247q0-98-98-98t-98 98v143z"/>
+<path fill="#39304d" d="M198 392h404v28H198z"/><path fill="#d2a965" d="M334 391v-96l68-34 68 34v96z"/><path fill="#171529" d="M370 391v-68q0-30 32-30t32 30v68z"/>
+<path fill="none" stroke="#81c7dc" stroke-width="5" opacity=".75" d="M0 338q90-28 180 0t180 0 180 0 180 0 180 0M0 370q90-28 180 0t180 0 180 0 180 0 180 0"/>
+<g fill="#f5e9a7"><circle cx="402" cy="217" r="8"/><path d="M398 188h8v22h-8zM389 198h26v4h-26z"/><circle cx="287" cy="276" r="4"/><circle cx="519" cy="276" r="4"/></g></svg>

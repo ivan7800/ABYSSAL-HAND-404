@@ -9,18 +9,23 @@ export const ZONES = [
   {id:'beyond-gate',name:'MÁS ALLÁ DE LA PUERTA',subtitle:'No queda cielo al que regresar.',boss:{id:'the-gate',name:'LA PUERTA QUE RESPIRA',rule:'La Locura generada por la mano se duplica.'}}
 ];
 
-export const BATTLES_PER_ZONE = 3;
+export const LEGACY_BATTLES_PER_ZONE = 3;
+export const BATTLES_PER_ZONE = 4;
 export const FINAL_ENCOUNTER = ZONES.length * BATTLES_PER_ZONE;
+export const LEGACY_FINAL_ENCOUNTER = ZONES.length * LEGACY_BATTLES_PER_ZONE;
 
-export function zoneForEncounter(encounter){
-  const zoneIndex=Math.min(ZONES.length-1,Math.floor((Math.max(1,encounter)-1)/BATTLES_PER_ZONE));
-  const battleInZone=((Math.max(1,encounter)-1)%BATTLES_PER_ZONE)+1;
+export function battlesPerZoneFor(campaignVersion=2){return campaignVersion<2?LEGACY_BATTLES_PER_ZONE:BATTLES_PER_ZONE;}
+export function finalEncounterForVersion(campaignVersion=2){return ZONES.length*battlesPerZoneFor(campaignVersion);}
+export function zoneForEncounter(encounter,campaignVersion=2){
+  const battles=battlesPerZoneFor(campaignVersion);
+  const zoneIndex=Math.min(ZONES.length-1,Math.floor((Math.max(1,encounter)-1)/battles));
+  const battleInZone=((Math.max(1,encounter)-1)%battles)+1;
   const zone=ZONES[zoneIndex];
-  return {...zone,zoneIndex,battleInZone,isElite:battleInZone===2,isBoss:battleInZone===3,boss:battleInZone===3?zone.boss:null};
+  return {...zone,zoneIndex,battleInZone,isElite:battleInZone===2,isBoss:battleInZone===battles,boss:battleInZone===battles?zone.boss:null};
 }
 
-export function battleLabel(encounter){
-  const z=zoneForEncounter(encounter);
+export function battleLabel(encounter,campaignVersion=2){
+  const z=zoneForEncounter(encounter,campaignVersion);
   if(z.isBoss)return `BOSS · ${z.boss.name}`;
   if(z.isElite)return 'ÉLITE';
   return 'ENCUENTRO';

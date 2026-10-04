@@ -4,7 +4,7 @@ import { scoreSelection } from '../scoring/scoring.js';
 import { applyMadness, corruptCard, madnessTier } from '../systems.js';
 import { makeRouteOptions, rewardForEncounter, advanceEncounter, targetForEncounter } from '../gameplay/progression.js';
 import { activeBoss, onBossDiscard, onBossHandResolved } from '../gameplay/bosses.js';
-import { zoneForEncounter, FINAL_ENCOUNTER } from '../gameplay/zones.js';
+import { zoneForEncounter, finalEncounterForVersion } from '../gameplay/zones.js';
 import { makeSeededRandom, normalizeSeed } from './rng.js';
 
 export const HAND_SIZE = 8;
@@ -13,7 +13,7 @@ export function newRun(randomOrSeed = Math.random) {
   const state = createInitialState();
   let random=randomOrSeed;
   if(typeof randomOrSeed==='string'){state.seed=normalizeSeed(randomOrSeed);random=makeSeededRandom(state.seed);}else{state.seed=normalizeSeed();}
-  state.targetScore=targetForEncounter(1);
+  state.targetScore=targetForEncounter(1,state.campaignVersion);
   state.deck = shuffle(createDeck(), random);
   state.hand = draw(state.deck, HAND_SIZE);
   return state;
@@ -40,7 +40,7 @@ function removeSelected(state) {
 }
 function resolveEnd(state) {
   if (state.totalScore >= state.targetScore) {
-    const zone=zoneForEncounter(state.encounter);
+    const zone=zoneForEncounter(state.encounter,state.campaignVersion);
     if(zone.isBoss)state.bossesDefeated+=1;
     state.status='choice'; state.screenMode='reward'; state.pendingReward=rewardForEncounter(state);
     return `${zone.isBoss?'ENTIDAD VENCIDA':'UMBRAL SUPERADO'}. Recompensa disponible: ${state.pendingReward} Ecos.`;
@@ -55,7 +55,9 @@ export function claimReward(state) {
   const boneBonus=state.relics.some(r=>r.id==='bone-die')?12:0;
   const amount=state.pendingReward+voidBonus+boneBonus;
   state.echoes+=amount; state.runStats.echoesEarned+=amount; state.pendingReward=0;
-  if(state.encounter>=FINAL_ENCOUNTER){
+  const currentZone=zoneForEncounter(state.encounter,state.campaignVersion);
+  if(state.relics.some(r=>r.id==='waking-seal')&&(currentZone.isBoss||currentZone.isElite))applyMadness(state,-6);
+  if(state.encounter>=finalEncounterForVersion(state.campaignVersion)){
     state.status='won';state.screenMode='victory';state.routeOptions=[];
     return {ok:true,message:`LA PUERTA CEDE. Has completado los 8 sectores y derrotado ${state.bossesDefeated} entidades.`};
   }
@@ -69,12 +71,13 @@ export function chooseRoute(state, routeId) {
   if(node.type==='battle') {
     advanceEncounter(state);
     if(state.pacts.some(p=>p.id==='void-pact')) applyMadness(state,8);
-    const zone=zoneForEncounter(state.encounter);
+    const zone=zoneForEncounter(state.encounter,state.campaignVersion);
     const threat=zone.isBoss?` BOSS: ${zone.boss.name}.`:zone.isElite?' Presencia ÉLITE detectada.':'';
     return {ok:true,message:`SECTOR ${zone.zoneIndex+1} · ${zone.name}. ENCUENTRO ${state.encounter}.${threat}`};
   }
   if(node.type==='shop') return {ok:true,message:'El Mercado Sumergido abre sus postigos.'};
   if(node.type==='ritual') return {ok:true,message:'Un altar antiguo exige una decisión.'};
+  if(node.type==='sanctuary') return {ok:true,message:'Encuentras un refugio bajo la marea.'};
   return {ok:true,message:'Algo llama desde detrás de una puerta sin muro.'};
 }
 export function playSelection(state) {
@@ -82,7 +85,7 @@ export function playSelection(state) {
   const result=preview(state);
   if(!result||state.handsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No hay una mano válida seleccionada.'};
   state.totalScore+=result.score; state.handsLeft-=1; state.turn+=1; state.runStats.handsPlayed+=1;
-  const zone=zoneForEncounter(state.encounter);
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   applyMadness(state,result.madnessCost+(zone.isElite?1:0)); state.runStats.maxMadness=Math.max(state.runStats.maxMadness,state.madness); state.lastResult=result;
   const removed=removeSelected(state);
   const bossEffect=onBossHandResolved(state,removed);

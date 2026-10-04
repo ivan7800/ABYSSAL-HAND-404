@@ -1,8 +1,8 @@
-import { SHOP_ITEMS, PACTS } from '../economy/content.js';
+import { SHOP_ITEMS, PACTS, EVENTS } from '../economy/content.js';
 import { applyMadness } from '../systems.js';
 import { advanceEncounter } from './progression.js';
 import { bossBlocksMadnessReduction } from './bosses.js';
-import { zoneForEncounter } from './zones.js';
+import { zoneForEncounter, finalEncounterForVersion } from './zones.js';
 
 export function buyItem(state, itemId) {
   const item = SHOP_ITEMS.find(x => x.id === itemId);
@@ -41,20 +41,37 @@ export function acceptPact(state, pactId) {
 }
 
 export function resolveEvent(state, choice) {
-  if (choice === 'open') {
-    applyMadness(state,12);
-    state.echoes += 14;
-    state.rituals.push({id:'salt-circle',name:'CÍRCULO DE SAL'});
-    return {ok:true,message:'Abriste la puerta: +14 Ecos, Círculo de Sal, +12 Locura.'};
+  if(state.screenMode!=='event')return {ok:false,message:'No hay un presagio pendiente.'};
+  if(state.campaignVersion<2&&['open','ignore'].includes(choice)){
+    if(choice==='open'){applyMadness(state,12);state.echoes+=14;state.rituals.push({id:'salt-circle',name:'CÍRCULO DE SAL'});return {ok:true,message:'Abriste la puerta: +14 Ecos, Círculo de Sal, +12 Locura.'};}
+    applyMadness(state,-5);return {ok:true,message:'Ignoraste el presagio. Recuperas 5 de Locura.'};
   }
-  applyMadness(state,-5);
-  return {ok:true,message:'Ignoraste el presagio. Recuperas 5 de Locura.'};
+  const event=EVENTS.find(x=>x.id===state.currentNode?.eventId)||EVENTS[zoneForEncounter(state.encounter,state.campaignVersion).zoneIndex%EVENTS.length];
+  const selected=event.choices.find(x=>x.id===choice);
+  if(!selected)return {ok:false,message:'Esa decisión no pertenece a este presagio.'};
+  const effect=selected.effect;
+  if(effect.echoes){state.echoes+=effect.echoes;state.runStats.echoesEarned+=effect.echoes;}
+  if(effect.madness)applyMadness(state,effect.madness);
+  if(effect.ritual&&!state.rituals.some(x=>x.id===effect.ritual)){const item=SHOP_ITEMS.find(x=>x.id===effect.ritual);state.rituals.push({id:effect.ritual,name:item?.name||effect.ritual});}
+  return {ok:true,message:`${event.name}: ${selected.label}.`};
+}
+
+export function resolveSanctuary(state,choice){
+  if(state.screenMode!=='sanctuary')return {ok:false,message:'No hay refugio disponible.'};
+  if(choice==='rest'){applyMadness(state,-18);return {ok:true,message:'Descansas bajo la piedra. Recuperas 18 de Locura.'};}
+  if(choice==='purify'){
+    const cards=[...state.hand,...state.deck,...state.discardPile].filter(c=>(c.corruption||0)>0).sort((a,b)=>b.corruption-a.corruption);
+    if(cards.length){cards[0].corruption=Math.max(0,cards[0].corruption-1);return {ok:true,message:`Purificas una carta: ahora tiene ${cards[0].corruption} de corrupción.`};}
+    applyMadness(state,-8);return {ok:true,message:'No hay cartas corruptas. El refugio calma 8 de Locura.'};
+  }
+  if(choice==='bargain'){state.echoes+=20;state.runStats.echoesEarned+=20;applyMadness(state,8);return {ok:true,message:'Aceptas el trato: +20 Ecos y +8 Locura.'};}
+  return {ok:false,message:'Decisión de refugio desconocida.'};
 }
 
 export function continueFromNode(state) {
   advanceEncounter(state);
-  const zone=zoneForEncounter(state.encounter);
+  if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return {ok:false,message:'La última puerta ya está abierta.'};
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   const threat=zone.isBoss?` BOSS: ${zone.boss.name}.`:zone.isElite?' Presencia ÉLITE detectada.':'';
   return {ok:true,message:`SECTOR ${zone.zoneIndex+1} · ${zone.name}. ENCUENTRO ${state.encounter}. El umbral asciende a ${state.targetScore}.${threat}`};
 }
-

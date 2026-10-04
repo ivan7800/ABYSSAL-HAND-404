@@ -4,7 +4,7 @@ const SUIT_ROTATION={spade:'heart',heart:'diamond',diamond:'club',club:'spade'};
 const SUIT_NAMES={spade:'Vacío',heart:'Sangre',diamond:'Ojo',club:'Raíz'};
 
 export function activeBoss(state){
-  const zone=zoneForEncounter(state.encounter);
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   return zone.isBoss?zone.boss:null;
 }
 

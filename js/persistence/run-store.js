@@ -49,6 +49,7 @@ export function restoreRun(payload){
   if(typeof raw.seed!=='string'||!raw.seed.trim())throw new Error('Seed ausente en el save.');
   const state={...raw};
   state.version=safeNumber(raw.version,7,1,999);
+  state.campaignVersion=safeNumber(raw.campaignVersion,state.version>=8?2:1,1,2);
   state.seed=raw.seed.slice(0,64);
   state.targetScore=safeNumber(raw.targetScore,300,1,1e12);
   state.totalScore=safeNumber(raw.totalScore,0,0,1e15);
@@ -56,7 +57,7 @@ export function restoreRun(payload){
   state.discardsLeft=safeNumber(raw.discardsLeft,5,0,99);
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
-  state.encounter=safeNumber(raw.encounter,1,1,24);
+  state.encounter=safeNumber(raw.encounter,1,1,32);
   state.bossesDefeated=safeNumber(raw.bossesDefeated,0,0,8);
   state.echoes=safeNumber(raw.echoes,0,0,1e12);
   state.pendingReward=safeNumber(raw.pendingReward,0,0,1e12);
@@ -72,7 +73,7 @@ export function restoreRun(payload){
   state.pacts=Array.isArray(raw.pacts)?raw.pacts.map(x=>({...x})).slice(0,16):[];
   state.runStats={handsPlayed:safeNumber(raw.runStats?.handsPlayed,0,0,1e7),echoesEarned:safeNumber(raw.runStats?.echoesEarned,0,0,1e12),maxMadness:safeNumber(raw.runStats?.maxMadness,0,0,100),cardsCorrupted:safeNumber(raw.runStats?.cardsCorrupted,0,0,9999)};
   state.status=['playing','choice','lost','won'].includes(raw.status)?raw.status:'playing';
-  state.screenMode=['battle','reward','route','shop','ritual','event','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
+  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
   state.metaCommitted=Boolean(raw.metaCommitted);
   return state;
 }

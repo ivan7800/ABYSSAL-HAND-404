@@ -5,7 +5,7 @@ import {serializeRun,restoreRun,saveRun} from '../js/persistence/run-store.js';
 import {buyItem} from '../js/gameplay/meta.js';
 import {safeStorage} from '../js/persistence/storage.js';
 import {pulseEffect} from '../js/ui/effects.js';
-const s=newRun('BOSS-SAVE');s.encounter=9;
+const s=newRun('BOSS-SAVE');s.encounter=12;
 const card=s.hand[0],oldSuit=card.suit,id=card.id;
 onBossHandResolved(s,[card]);assert.notEqual(card.suit,oldSuit);assert.equal(card.id,id);
 const restored=restoreRun(serializeRun(s));assert.equal(restored.hand[0].suit,card.suit);

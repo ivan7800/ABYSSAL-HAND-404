@@ -15,6 +15,6 @@ t('foco visible explícito',()=>assert.match(css,/:focus-visible/));
 t('importación limitada a 2 MB',()=>assert.match(app,/file\.size>2_000_000/));
 t('input de save restringe JSON',()=>assert.match(index,/accept="application\/json,\.json"/));
 t('Service Worker limita mismo origen',()=>assert.match(sw,/url\.origin!==self\.location\.origin/));
-t('entrypoint clásico portable',()=>{assert.ok(index.includes('js/app.bundle.js?v=1.0.0-rc.8'));assert.doesNotMatch(index,/type="module"/);});
+t('entrypoint clásico portable',()=>{assert.ok(index.includes('js/app.bundle.js?v=1.0.0-rc.9'));assert.doesNotMatch(index,/type="module"/);});
 t('guía accesible con apertura inicial recordada',()=>{assert.match(index,/<details class="quick-guide">/);assert.match(index,/Puntuación:/);assert.match(index,/Alcanza el objetivo/);assert.match(app,/quickGuide\.open=true/);assert.match(app,/abyssal-quick-guide-seen-rc7/);});
 console.log(`HARDENING TESTS: ${n}/14 PASS`);

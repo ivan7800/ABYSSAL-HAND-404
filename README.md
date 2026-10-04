@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.8 ART + PWA UPDATE
+# ABYSSAL HAND 404 — 1.0.0-rc.9 CAMPAÑA EXPANDIDA
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -16,10 +16,15 @@ También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario so
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
 
-## Qué incluye rc.8
+## Qué incluye rc.9
 
-- Las mejoras visuales de rc.7 y un flujo claro para instalar la actualización PWA.
-- Si hay un Service Worker nuevo esperando, aparece **ACTUALIZAR**; al aplicarlo la pestaña carga la versión nueva automáticamente.
+- Campaña ampliada de 24 a 32 encuentros: cuatro por sector y ocho jefes al final de cada sector.
+- Cuatro rutas en cada cruce, con decisión entre combate, mercado, evento, altar/refugio.
+- Ocho eventos narrativos con dos respuestas cada uno, premios y costes distintos.
+- Refugios con tres opciones: bajar Locura, purificar una carta o arriesgar Locura por Ecos.
+- Tres reliquias nuevas de tienda: una mano adicional, un descarte adicional o alivio al derrotar élites/jefes.
+- Las partidas guardadas de la campaña anterior conservan su recorrido de 24 encuentros.
+- Se mantiene el botón para aplicar actualizaciones PWA pendientes.
 
 ## Qué incluye rc.7
 
@@ -66,8 +71,8 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.6 · QUICK GUIDE`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.9 · CAMPAÑA EXPANDIDA`.
 
 ## Alcance
 
-Sigue siendo una RC: se ha verificado el funcionamiento descrito en Chromium, pero no se ha certificado Safari/iPhone ni el diálogo nativo de instalación PWA. La campaña completa y su equilibrio de dificultad no se han certificado mediante juego manual.
+Sigue siendo una RC: se ha verificado el funcionamiento descrito en Chromium, pero no se ha certificado Safari/iPhone ni el diálogo nativo de instalación PWA. La campaña ampliada tiene pruebas automatizadas de progresión y compatibilidad; todavía falta recorrer los 32 encuentros manualmente para validar el equilibrio y duración percibida.

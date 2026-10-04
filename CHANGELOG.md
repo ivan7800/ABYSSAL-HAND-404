@@ -1,5 +1,14 @@
 # Historial
 
+## 1.0.0-rc.9 — CAMPAÑA EXPANDIDA
+
+- La campaña nueva pasa a 32 encuentros distribuidos en cuatro por sector; los saves anteriores mantienen campaña de 24.
+- Cada cruce presenta cuatro opciones con contexto y descripción.
+- Ocho eventos sectoriales ofrecen decisiones narrativas con consecuencias distintas.
+- Se añade un refugio con descanso, purificación y un trato de riesgo.
+- Tres reliquias amplían las decisiones de construcción en el mercado.
+- Suite funcional completa y empaquetado actualizados; recorrido manual de equilibrio sigue pendiente.
+
 ## 1.0.0-rc.8 — PWA UPDATE ACTION
 
 - La inspección de GitHub Pages reveló que el aviso de actualización no ofrecía una acción.

@@ -48,7 +48,8 @@ return {SUITS,RANKS,createDeck,shuffle,draw};
 const m1=(()=>{
 function createInitialState() {
   return {
-    version: 7,
+    version: 8,
+    campaignVersion: 2,
     seed: '',
     targetScore: 300,
     totalScore: 0,
@@ -188,24 +189,29 @@ const ZONES = [
   {id:'beyond-gate',name:'MÁS ALLÁ DE LA PUERTA',subtitle:'No queda cielo al que regresar.',boss:{id:'the-gate',name:'LA PUERTA QUE RESPIRA',rule:'La Locura generada por la mano se duplica.'}}
 ];
 
-const BATTLES_PER_ZONE = 3;
+const LEGACY_BATTLES_PER_ZONE = 3;
+const BATTLES_PER_ZONE = 4;
 const FINAL_ENCOUNTER = ZONES.length * BATTLES_PER_ZONE;
+const LEGACY_FINAL_ENCOUNTER = ZONES.length * LEGACY_BATTLES_PER_ZONE;
 
-function zoneForEncounter(encounter){
-  const zoneIndex=Math.min(ZONES.length-1,Math.floor((Math.max(1,encounter)-1)/BATTLES_PER_ZONE));
-  const battleInZone=((Math.max(1,encounter)-1)%BATTLES_PER_ZONE)+1;
+function battlesPerZoneFor(campaignVersion=2){return campaignVersion<2?LEGACY_BATTLES_PER_ZONE:BATTLES_PER_ZONE;}
+function finalEncounterForVersion(campaignVersion=2){return ZONES.length*battlesPerZoneFor(campaignVersion);}
+function zoneForEncounter(encounter,campaignVersion=2){
+  const battles=battlesPerZoneFor(campaignVersion);
+  const zoneIndex=Math.min(ZONES.length-1,Math.floor((Math.max(1,encounter)-1)/battles));
+  const battleInZone=((Math.max(1,encounter)-1)%battles)+1;
   const zone=ZONES[zoneIndex];
-  return {...zone,zoneIndex,battleInZone,isElite:battleInZone===2,isBoss:battleInZone===3,boss:battleInZone===3?zone.boss:null};
+  return {...zone,zoneIndex,battleInZone,isElite:battleInZone===2,isBoss:battleInZone===battles,boss:battleInZone===battles?zone.boss:null};
 }
 
-function battleLabel(encounter){
-  const z=zoneForEncounter(encounter);
+function battleLabel(encounter,campaignVersion=2){
+  const z=zoneForEncounter(encounter,campaignVersion);
   if(z.isBoss)return `BOSS · ${z.boss.name}`;
   if(z.isElite)return 'ÉLITE';
   return 'ENCUENTRO';
 }
 
-return {ZONES,BATTLES_PER_ZONE,FINAL_ENCOUNTER,zoneForEncounter,battleLabel};
+return {ZONES,LEGACY_BATTLES_PER_ZONE,BATTLES_PER_ZONE,FINAL_ENCOUNTER,LEGACY_FINAL_ENCOUNTER,battlesPerZoneFor,finalEncounterForVersion,zoneForEncounter,battleLabel};
 })();
 // js/gameplay/bosses.js
 const m5=(()=>{
@@ -214,7 +220,7 @@ const SUIT_ROTATION={spade:'heart',heart:'diamond',diamond:'club',club:'spade'};
 const SUIT_NAMES={spade:'Vacío',heart:'Sangre',diamond:'Ojo',club:'Raíz'};
 
 function activeBoss(state){
-  const zone=zoneForEncounter(state.encounter);
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   return zone.isBoss?zone.boss:null;
 }
 
@@ -295,41 +301,71 @@ function scoreSelection(cards, state = null) {
 
 return {scoreSelection};
 })();
-// js/gameplay/progression.js
+// js/economy/content.js
 const m7=(()=>{
-const { zoneForEncounter, FINAL_ENCOUNTER }=m4;
+const SHOP_ITEMS = [
+  { id:'bone-die', type:'relic', name:'DADO DE HUESO', cost:12, text:'+12 Ecos al superar un encuentro.' },
+  { id:'black-thread', type:'relic', name:'HILO NEGRO', cost:15, text:'La primera corrupción de cada encuentro cuesta 0 Locura.' },
+  { id:'coral-heart', type:'relic', name:'CORAZÓN DE CORAL', cost:22, text:'+1 mano en cada encuentro.' },
+  { id:'ink-compass', type:'relic', name:'BRÚJULA DE TINTA', cost:20, text:'+1 descarte en cada encuentro.' },
+  { id:'waking-seal', type:'relic', name:'SELLO DEL DESPERTAR', cost:26, text:'Reduce 6 de Locura al vencer un élite o jefe.' },
+  { id:'salt-circle', type:'ritual', name:'CÍRCULO DE SAL', cost:9, text:'Reduce 18 de Locura.' },
+  { id:'red-key', type:'ritual', name:'LLAVE ROJA', cost:11, text:'Corrompe una carta dos niveles.' }
+];
+
+const PACTS = [
+  { id:'blood-pact', name:'PACTO DE SANGRE', text:'+1 Resonancia permanente · cada mano +2 Locura.' },
+  { id:'void-pact', name:'PACTO DEL VACÍO', text:'+20% recompensa · comienzas cada encuentro con +8 Locura.' },
+  { id:'root-pact', name:'PACTO DE LA RAÍZ', text:'+1 descarte · las cartas corruptas dan +2 Ecos extra.' }
+];
+
+const EVENTS = [
+  {id:'silent-bell',name:'LA CAMPANA MUDA',text:'Una campana sumergida vibra sin sonar. Algo bajo el agua responde a cada golpe.',choices:[{id:'hear',label:'ESCUCHAR · +14 ECOS · +12 LOCURA',effect:{echoes:14,madness:12,ritual:'salt-circle'}},{id:'silence',label:'SELLAR · +5 ECOS · −8 LOCURA',effect:{echoes:5,madness:-8}}]},
+  {id:'living-book',name:'EL LIBRO VIVO',text:'Las páginas se cierran alrededor de una mano que no es la tuya.',choices:[{id:'read',label:'LEER · LLAVE ROJA · +10 LOCURA',effect:{echoes:8,madness:10,ritual:'red-key'}},{id:'burn',label:'QUEMAR · −12 LOCURA',effect:{madness:-12}}]},
+  {id:'root-crown',name:'LA CORONA DE RAÍCES',text:'Bajo el árbol cuelga una corona que todavía conserva el calor de una cabeza.',choices:[{id:'wear',label:'PONÉRTELA · +24 ECOS · +14 LOCURA',effect:{echoes:24,madness:14}},{id:'bury',label:'ENTERRARLA · +8 ECOS · −10 LOCURA',effect:{echoes:8,madness:-10}}]},
+  {id:'false-sun',name:'EL SOL FALSO',text:'El observatorio calcula un amanecer que sucederá dentro de un cadáver.',choices:[{id:'chart',label:'CALCULAR · CÍRCULO DE SAL · +8 LOCURA',effect:{echoes:12,madness:8,ritual:'salt-circle'}},{id:'blind',label:'APAGAR · +6 ECOS · −12 LOCURA',effect:{echoes:6,madness:-12}}]},
+  {id:'folded-street',name:'LA CALLE PLEGADA',text:'La avenida regresa a su propio comienzo. En el centro, alguien ofrece un atajo.',choices:[{id:'shortcut',label:'ATAJO · +24 ECOS · +15 LOCURA',effect:{echoes:24,madness:15}},{id:'retrace',label:'VOLVER SOBRE TUS PASOS · −10 LOCURA',effect:{madness:-10}}]},
+  {id:'bone-tide',name:'LA MAREA DE HUESOS',text:'La marea deposita costillas con los nombres de quienes aún respiran.',choices:[{id:'dive',label:'SUMERGIRTE · LLAVE ROJA · +12 LOCURA',effect:{echoes:14,madness:12,ritual:'red-key'}},{id:'shore',label:'QUEDARTE EN LA ORILLA · +5 ECOS · −8 LOCURA',effect:{echoes:5,madness:-8}}]},
+  {id:'choir-well',name:'EL POZO DEL CORO',text:'Desde el pozo, muchas voces pronuncian una sola plegaria: la tuya.',choices:[{id:'answer',label:'RESPONDER · CÍRCULO DE SAL · +8 LOCURA',effect:{echoes:12,madness:8,ritual:'salt-circle'}},{id:'refuse',label:'CALLAR · −12 LOCURA',effect:{madness:-12}}]},
+  {id:'breathing-gate',name:'EL ALIENTO DE LA PUERTA',text:'La puerta exhala. Detrás de ti, el mundo inhala al mismo tiempo.',choices:[{id:'cross',label:'CRUZAR · +32 ECOS · +20 LOCURA',effect:{echoes:32,madness:20}},{id:'wait',label:'ESPERAR · +10 ECOS · −8 LOCURA',effect:{echoes:10,madness:-8}}]}
+];
+
+return {SHOP_ITEMS,PACTS,EVENTS};
+})();
+// js/gameplay/progression.js
+const m8=(()=>{
+const { zoneForEncounter, finalEncounterForVersion }=m4;
+const { EVENTS }=m7;
 const NODE_TYPES = {
   battle: { name: 'ENCUENTRO', icon: '◆' },
   shop: { name: 'MERCADO', icon: '¤' },
   ritual: { name: 'RITUAL', icon: '✦' },
-  event: { name: 'PRESAGIO', icon: '?' }
+  event: { name: 'PRESAGIO', icon: '?', description:'Un relato del sector con una decisión de riesgo o alivio.' },
+  sanctuary: { name: 'REFUGIO', icon: '✚', description:'Recupera Locura, purifica una carta o cambia seguridad por Ecos.' }
 };
 
 const ROUTE_TABLE = [
-  ['battle','shop','event'],
-  ['battle','ritual','shop'],
-  ['event','battle','ritual'],
-  ['shop','battle','event']
+  ['battle','shop','event','sanctuary'],
+  ['battle','ritual','shop','sanctuary'],
+  ['event','battle','ritual','sanctuary'],
+  ['shop','battle','event','sanctuary']
 ];
 
-function targetForEncounter(encounter) {
-  const zone=zoneForEncounter(encounter);
+function targetForEncounter(encounter,campaignVersion=2) {
+  const zone=zoneForEncounter(encounter,campaignVersion);
   const base=300 + Math.max(0, encounter - 1) * 125;
   return Math.round(base * (zone.isBoss?1.35:zone.isElite?1.15:1));
 }
 
 function makeRouteOptions(state) {
-  if(state.encounter>=FINAL_ENCOUNTER)return [];
+  if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return [];
   const row = ROUTE_TABLE[(state.encounter - 1) % ROUTE_TABLE.length];
-  return row.map((type, index) => ({
-    id: `${state.encounter}-${index}-${type}`,
-    type,
-    ...NODE_TYPES[type]
-  }));
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
+  return row.map((type,index)=>({id:`${state.encounter}-${index}-${type}`,type,...NODE_TYPES[type],...(type==='event'?{eventId:EVENTS[zone.zoneIndex%EVENTS.length].id}:{})}));
 }
 
 function rewardForEncounter(state) {
-  const zone=zoneForEncounter(state.encounter);
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   const base = 8 + state.encounter * 3;
   const madnessBonus = state.madness >= 50 ? 3 : 0;
   const dangerBonus=zone.isBoss?10:zone.isElite?4:0;
@@ -339,9 +375,9 @@ function rewardForEncounter(state) {
 function advanceEncounter(state) {
   state.encounter += 1;
   state.totalScore = 0;
-  state.targetScore = targetForEncounter(state.encounter);
-  state.handsLeft = 4;
-  state.discardsLeft = 4 + (state.relics.some(r => r.id === 'salt-lamp') ? 1 : 0) + (state.pacts.some(p=>p.id==='root-pact')?1:0);
+  state.targetScore = targetForEncounter(state.encounter,state.campaignVersion);
+  state.handsLeft = 4 + (state.relics.some(r=>r.id==='coral-heart')?1:0);
+  state.discardsLeft = 4 + state.relics.filter(r => ['salt-lamp','ink-compass'].includes(r.id)).length + (state.pacts.some(p=>p.id==='root-pact')?1:0);
   state.selectedIds.clear();
   state.status = 'playing';
   state.screenMode = 'battle';
@@ -352,7 +388,7 @@ function advanceEncounter(state) {
 return {NODE_TYPES,targetForEncounter,makeRouteOptions,rewardForEncounter,advanceEncounter};
 })();
 // js/core/rng.js
-const m8=(()=>{
+const m9=(()=>{
 function hashSeed(seed='ABYSS-404') {
   let h = 2166136261 >>> 0;
   for (let i = 0; i < seed.length; i++) {
@@ -388,22 +424,22 @@ function createSeed(random=Math.random) {
 return {hashSeed,makeSeededRandom,normalizeSeed,createSeed};
 })();
 // js/core/game.js
-const m9=(()=>{
+const m10=(()=>{
 const { createDeck, shuffle, draw }=m0;
 const { createInitialState }=m1;
 const { scoreSelection }=m6;
 const { applyMadness, corruptCard, madnessTier }=m3;
-const { makeRouteOptions, rewardForEncounter, advanceEncounter, targetForEncounter }=m7;
+const { makeRouteOptions, rewardForEncounter, advanceEncounter, targetForEncounter }=m8;
 const { activeBoss, onBossDiscard, onBossHandResolved }=m5;
-const { zoneForEncounter, FINAL_ENCOUNTER }=m4;
-const { makeSeededRandom, normalizeSeed }=m8;
+const { zoneForEncounter, finalEncounterForVersion }=m4;
+const { makeSeededRandom, normalizeSeed }=m9;
 const HAND_SIZE = 8;
 
 function newRun(randomOrSeed = Math.random) {
   const state = createInitialState();
   let random=randomOrSeed;
   if(typeof randomOrSeed==='string'){state.seed=normalizeSeed(randomOrSeed);random=makeSeededRandom(state.seed);}else{state.seed=normalizeSeed();}
-  state.targetScore=targetForEncounter(1);
+  state.targetScore=targetForEncounter(1,state.campaignVersion);
   state.deck = shuffle(createDeck(), random);
   state.hand = draw(state.deck, HAND_SIZE);
   return state;
@@ -430,7 +466,7 @@ function removeSelected(state) {
 }
 function resolveEnd(state) {
   if (state.totalScore >= state.targetScore) {
-    const zone=zoneForEncounter(state.encounter);
+    const zone=zoneForEncounter(state.encounter,state.campaignVersion);
     if(zone.isBoss)state.bossesDefeated+=1;
     state.status='choice'; state.screenMode='reward'; state.pendingReward=rewardForEncounter(state);
     return `${zone.isBoss?'ENTIDAD VENCIDA':'UMBRAL SUPERADO'}. Recompensa disponible: ${state.pendingReward} Ecos.`;
@@ -445,7 +481,9 @@ function claimReward(state) {
   const boneBonus=state.relics.some(r=>r.id==='bone-die')?12:0;
   const amount=state.pendingReward+voidBonus+boneBonus;
   state.echoes+=amount; state.runStats.echoesEarned+=amount; state.pendingReward=0;
-  if(state.encounter>=FINAL_ENCOUNTER){
+  const currentZone=zoneForEncounter(state.encounter,state.campaignVersion);
+  if(state.relics.some(r=>r.id==='waking-seal')&&(currentZone.isBoss||currentZone.isElite))applyMadness(state,-6);
+  if(state.encounter>=finalEncounterForVersion(state.campaignVersion)){
     state.status='won';state.screenMode='victory';state.routeOptions=[];
     return {ok:true,message:`LA PUERTA CEDE. Has completado los 8 sectores y derrotado ${state.bossesDefeated} entidades.`};
   }
@@ -459,12 +497,13 @@ function chooseRoute(state, routeId) {
   if(node.type==='battle') {
     advanceEncounter(state);
     if(state.pacts.some(p=>p.id==='void-pact')) applyMadness(state,8);
-    const zone=zoneForEncounter(state.encounter);
+    const zone=zoneForEncounter(state.encounter,state.campaignVersion);
     const threat=zone.isBoss?` BOSS: ${zone.boss.name}.`:zone.isElite?' Presencia ÉLITE detectada.':'';
     return {ok:true,message:`SECTOR ${zone.zoneIndex+1} · ${zone.name}. ENCUENTRO ${state.encounter}.${threat}`};
   }
   if(node.type==='shop') return {ok:true,message:'El Mercado Sumergido abre sus postigos.'};
   if(node.type==='ritual') return {ok:true,message:'Un altar antiguo exige una decisión.'};
+  if(node.type==='sanctuary') return {ok:true,message:'Encuentras un refugio bajo la marea.'};
   return {ok:true,message:'Algo llama desde detrás de una puerta sin muro.'};
 }
 function playSelection(state) {
@@ -472,7 +511,7 @@ function playSelection(state) {
   const result=preview(state);
   if(!result||state.handsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No hay una mano válida seleccionada.'};
   state.totalScore+=result.score; state.handsLeft-=1; state.turn+=1; state.runStats.handsPlayed+=1;
-  const zone=zoneForEncounter(state.encounter);
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   applyMadness(state,result.madnessCost+(zone.isElite?1:0)); state.runStats.maxMadness=Math.max(state.runStats.maxMadness,state.madness); state.lastResult=result;
   const removed=removeSelected(state);
   const bossEffect=onBossHandResolved(state,removed);
@@ -492,30 +531,13 @@ function discardSelection(state) {
 
 return {HAND_SIZE,newRun,selectedCards,preview,toggleCard,claimReward,chooseRoute,playSelection,discardSelection};
 })();
-// js/economy/content.js
-const m10=(()=>{
-const SHOP_ITEMS = [
-  { id:'bone-die', type:'relic', name:'DADO DE HUESO', cost:12, text:'+12 Ecos al superar un encuentro.' },
-  { id:'black-thread', type:'relic', name:'HILO NEGRO', cost:15, text:'La primera corrupción de cada encuentro cuesta 0 Locura.' },
-  { id:'salt-circle', type:'ritual', name:'CÍRCULO DE SAL', cost:9, text:'Reduce 18 de Locura.' },
-  { id:'red-key', type:'ritual', name:'LLAVE ROJA', cost:11, text:'Corrompe una carta dos niveles.' }
-];
-
-const PACTS = [
-  { id:'blood-pact', name:'PACTO DE SANGRE', text:'+1 Resonancia permanente · cada mano +2 Locura.' },
-  { id:'void-pact', name:'PACTO DEL VACÍO', text:'+20% recompensa · comienzas cada encuentro con +8 Locura.' },
-  { id:'root-pact', name:'PACTO DE LA RAÍZ', text:'+1 descarte · las cartas corruptas dan +2 Ecos extra.' }
-];
-
-return {SHOP_ITEMS,PACTS};
-})();
 // js/gameplay/meta.js
 const m11=(()=>{
-const { SHOP_ITEMS, PACTS }=m10;
+const { SHOP_ITEMS, PACTS, EVENTS }=m7;
 const { applyMadness }=m3;
-const { advanceEncounter }=m7;
+const { advanceEncounter }=m8;
 const { bossBlocksMadnessReduction }=m5;
-const { zoneForEncounter }=m4;
+const { zoneForEncounter, finalEncounterForVersion }=m4;
 function buyItem(state, itemId) {
   const item = SHOP_ITEMS.find(x => x.id === itemId);
   if (!item) return {ok:false,message:'Objeto desconocido.'};
@@ -553,25 +575,42 @@ function acceptPact(state, pactId) {
 }
 
 function resolveEvent(state, choice) {
-  if (choice === 'open') {
-    applyMadness(state,12);
-    state.echoes += 14;
-    state.rituals.push({id:'salt-circle',name:'CÍRCULO DE SAL'});
-    return {ok:true,message:'Abriste la puerta: +14 Ecos, Círculo de Sal, +12 Locura.'};
+  if(state.screenMode!=='event')return {ok:false,message:'No hay un presagio pendiente.'};
+  if(state.campaignVersion<2&&['open','ignore'].includes(choice)){
+    if(choice==='open'){applyMadness(state,12);state.echoes+=14;state.rituals.push({id:'salt-circle',name:'CÍRCULO DE SAL'});return {ok:true,message:'Abriste la puerta: +14 Ecos, Círculo de Sal, +12 Locura.'};}
+    applyMadness(state,-5);return {ok:true,message:'Ignoraste el presagio. Recuperas 5 de Locura.'};
   }
-  applyMadness(state,-5);
-  return {ok:true,message:'Ignoraste el presagio. Recuperas 5 de Locura.'};
+  const event=EVENTS.find(x=>x.id===state.currentNode?.eventId)||EVENTS[zoneForEncounter(state.encounter,state.campaignVersion).zoneIndex%EVENTS.length];
+  const selected=event.choices.find(x=>x.id===choice);
+  if(!selected)return {ok:false,message:'Esa decisión no pertenece a este presagio.'};
+  const effect=selected.effect;
+  if(effect.echoes){state.echoes+=effect.echoes;state.runStats.echoesEarned+=effect.echoes;}
+  if(effect.madness)applyMadness(state,effect.madness);
+  if(effect.ritual&&!state.rituals.some(x=>x.id===effect.ritual)){const item=SHOP_ITEMS.find(x=>x.id===effect.ritual);state.rituals.push({id:effect.ritual,name:item?.name||effect.ritual});}
+  return {ok:true,message:`${event.name}: ${selected.label}.`};
+}
+
+function resolveSanctuary(state,choice){
+  if(state.screenMode!=='sanctuary')return {ok:false,message:'No hay refugio disponible.'};
+  if(choice==='rest'){applyMadness(state,-18);return {ok:true,message:'Descansas bajo la piedra. Recuperas 18 de Locura.'};}
+  if(choice==='purify'){
+    const cards=[...state.hand,...state.deck,...state.discardPile].filter(c=>(c.corruption||0)>0).sort((a,b)=>b.corruption-a.corruption);
+    if(cards.length){cards[0].corruption=Math.max(0,cards[0].corruption-1);return {ok:true,message:`Purificas una carta: ahora tiene ${cards[0].corruption} de corrupción.`};}
+    applyMadness(state,-8);return {ok:true,message:'No hay cartas corruptas. El refugio calma 8 de Locura.'};
+  }
+  if(choice==='bargain'){state.echoes+=20;state.runStats.echoesEarned+=20;applyMadness(state,8);return {ok:true,message:'Aceptas el trato: +20 Ecos y +8 Locura.'};}
+  return {ok:false,message:'Decisión de refugio desconocida.'};
 }
 
 function continueFromNode(state) {
   advanceEncounter(state);
-  const zone=zoneForEncounter(state.encounter);
+  if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return {ok:false,message:'La última puerta ya está abierta.'};
+  const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   const threat=zone.isBoss?` BOSS: ${zone.boss.name}.`:zone.isElite?' Presencia ÉLITE detectada.':'';
   return {ok:true,message:`SECTOR ${zone.zoneIndex+1} · ${zone.name}. ENCUENTRO ${state.encounter}. El umbral asciende a ${state.targetScore}.${threat}`};
 }
 
-
-return {buyItem,useRitual,acceptPact,resolveEvent,continueFromNode};
+return {buyItem,useRitual,acceptPact,resolveEvent,resolveSanctuary,continueFromNode};
 })();
 // js/meta/codex.js
 const m12=(()=>{
@@ -603,7 +642,7 @@ return {CODEX_ENTRIES,unlockedCodex};
 const m13=(()=>{
 const { zoneForEncounter, battleLabel }=m4;
 const { unlockedCodex }=m12;
-const { SHOP_ITEMS, PACTS }=m10;
+const { SHOP_ITEMS, PACTS, EVENTS }=m7;
 const refs = {
   table:document.querySelector('.table'), hand: document.querySelector('#hand'), handName: document.querySelector('#handName'), baseScore: document.querySelector('#baseScore'), multiplier: document.querySelector('#multiplier'), previewScore: document.querySelector('#previewScore'), totalScore: document.querySelector('#totalScore'),
   targetScore: document.querySelector('#targetScore'), handsLeft: document.querySelector('#handsLeft'), discardsLeft: document.querySelector('#discardsLeft'), deckCount: document.querySelector('#deckCount'), selectionCount: document.querySelector('#selectionCount'), corruptionCount: document.querySelector('#corruptionCount'),
@@ -615,24 +654,25 @@ const RANK_MOTIFS={'2':'·✦\n✦·','3':'✦·✦\n · ','4':'✦ ✦\n✦ ✦
 const SUIT_SIGILS={spade:'✦',heart:'♥',diamond:'◉',club:'Ψ'};
 const SECTOR_ART={'drowned-port':'drowned-port-wide.png','sunken-library':'sunken-library.webp','moonless-forest':'moonless-forest.webp','black-observatory':'black-observatory.webp','impossible-city':'impossible-city.png','ash-sea':'ash-sea.png','abyssal-temple':'abyssal-temple.png','beyond-gate':'beyond-gate.png'};
 const BOSS_ART={'blind-astronomer':'blind-astronomer','abyssal-mother':'abyssal-mother','faceless-king':'faceless-king','devourer':'devourer','sleeper':'sleeper','mirror-saint':'mirror-saint','black-choir':'black-choir','the-gate':'the-gate'};
-const NODE_ART={route:'route-map',shop:'drowned-market',ritual:'nameless-altar',event:'wall-less-door',victory:'beyond-the-gate',lost:'the-last-signal'};
+const NODE_ART={route:'route-map',shop:'drowned-market',ritual:'nameless-altar',event:'wall-less-door',sanctuary:'tide-refuge',victory:'beyond-the-gate',lost:'the-last-signal'};
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!=null)el.textContent=text;return el;};
 function makeButton(text, action, value, cls='node-btn'){const b=make('button',cls,text);b.type='button';b.dataset.action=action;if(value)b.dataset.value=value;return b;}
 function renderCard(card,selected,onToggle){const btn=make('button',`card suit-${card.suit} corrupt-${card.corruption||0}${selected?' selected':''}`);btn.type='button';btn.dataset.cardId=card.id;btn.dataset.rank=String(card.rank);btn.setAttribute('aria-pressed',String(selected));btn.setAttribute('aria-label',`${card.rankLabel} de ${card.suitName}${card.corruption?`, corrupción ${card.corruption}`:''}`);const top=make('div','card-top');top.append(make('span','rank',card.rankLabel),make('span','suit-mini',SUIT_SIGILS[card.suit]));const motif=make('span','motif',`${SUIT_SIGILS[card.suit]}${RANK_MOTIFS[card.rankLabel]}${SUIT_SIGILS[card.suit]}`);const bottom=make('div','card-bottom');bottom.append(make('span','name',card.suitName.toUpperCase()),make('span','corruption-pips',card.corruption?'◆'.repeat(card.corruption):'···'));btn.append(top,motif,bottom);btn.addEventListener('click',()=>onToggle(card.id));return btn;}
 function powerChip(kind,icon,title,text){const interactive=kind==='ritual';const a=make(interactive?'button':'article',`power-chip ${kind}`);if(interactive){a.type='button';a.setAttribute('aria-label',`Usar ritual: ${title}. ${text}`);}a.append(make('span','power-icon',icon));const d=make('div');d.append(make('b','',title),make('small','',text));a.append(d);return a;}
-function renderPowers(state){refs.powers.replaceChildren();refs.powers.append(powerChip('entity','◉','EL OJO QUE NO DUERME','3+ Ojos: +1 Resonancia · cada mano +1 Locura'));for(const relic of state.relics){const text=relic.id==='salt-lamp'?'+1 descarte por encuentro.':relic.id==='bone-die'?'+12 Ecos al superar un encuentro.':'Objeto persistente de la expedición.';refs.powers.append(powerChip('relic','✦',relic.name,text));}for(const pact of state.pacts)refs.powers.append(powerChip('pact','⚠',pact.name,'Poder alto a cambio de una consecuencia.'));for(const ritual of state.rituals){const chip=powerChip('ritual','✧',ritual.name,'Ritual consumible disponible.');chip.dataset.ritualId=ritual.id;refs.powers.append(chip);}}
+function renderPowers(state){refs.powers.replaceChildren();refs.powers.append(powerChip('entity','◉','EL OJO QUE NO DUERME','3+ Ojos: +1 Resonancia · cada mano +1 Locura'));const relicText={'salt-lamp':'+1 descarte por encuentro.','bone-die':'+12 Ecos al superar un encuentro.','coral-heart':'+1 mano por encuentro.','ink-compass':'+1 descarte por encuentro.','waking-seal':'−6 Locura al vencer élites y jefes.'};for(const relic of state.relics)refs.powers.append(powerChip('relic','✦',relic.name,relicText[relic.id]||'Objeto persistente de la expedición.'));for(const pact of state.pacts)refs.powers.append(powerChip('pact','⚠',pact.name,'Poder alto a cambio de una consecuencia.'));for(const ritual of state.rituals){const chip=powerChip('ritual','✧',ritual.name,'Ritual consumible disponible.');chip.dataset.ritualId=ritual.id;refs.powers.append(chip);}}
 function renderNode(state){refs.nodePanel.replaceChildren();refs.nodePanel.hidden=state.screenMode==='battle'&&state.status!=='lost';if(refs.nodePanel.hidden)return;const title=make('h2','node-title','');const text=make('p','node-copy','');const actions=make('div','node-actions');let scene=state.status==='lost'?'lost':state.screenMode;
   if(state.status==='lost'){title.textContent='LA EXPEDICIÓN SE HUNDE';title.classList.add('defeat-mark');text.textContent='La Locura ha devorado la última mano. Los Ecos que reuniste quedan en el Códice.';actions.append(makeButton('INTENTAR DE NUEVO','restart'));}
   if(state.screenMode==='reward'){title.textContent='UMBRAL SUPERADO';text.textContent=`La oscuridad ofrece ${state.pendingReward} Ecos antes de mostrar la siguiente senda.`;actions.append(makeButton(`RECOGER ${state.pendingReward} ECOS`,'claim'));}
-  if(state.screenMode==='route'){scene='route';title.textContent='ELIGE LA SENDA';text.textContent='No todas las rutas vuelven al mismo lugar.';for(const node of state.routeOptions)actions.append(makeButton(`${node.icon} ${node.name}`,'route',node.id));}
+  if(state.screenMode==='route'){scene='route';title.textContent='ELIGE LA SENDA';text.textContent='Cada decisión cambia lo que llevas al siguiente combate.';for(const node of state.routeOptions){const card=make('div','offer route-offer');card.append(make('b','',`${node.icon} ${node.name}`),make('small','',node.description||({battle:'Arriesga una batalla para avanzar y cobrar Ecos.',shop:'Compra una ventaja con los Ecos que conservas.',ritual:'Acepta un pacto poderoso con un precio permanente.'}[node.type]||'Investiga una senda desconocida.')));card.append(makeButton('ELEGIR','route',node.id,'mini-btn'));actions.append(card);}}
   if(state.screenMode==='shop'){scene='shop';title.textContent='MERCADO SUMERGIDO';text.textContent=`Ecos disponibles: ${state.echoes}`;for(const item of SHOP_ITEMS){const card=make('div','offer');card.append(make('b','',`${item.name} · ${item.cost}E`),make('small','',item.text),makeButton('COMPRAR','buy',item.id,'mini-btn'));actions.append(card);}actions.append(makeButton('ABANDONAR MERCADO','continue'));}
   if(state.screenMode==='ritual'){scene='ritual';title.textContent='ALTAR SIN NOMBRE';text.textContent='Solo un pacto puede arraigar en este altar.';for(const pact of PACTS){const card=make('div','offer');card.append(make('b','',pact.name),make('small','',pact.text),makeButton('ACEPTAR','pact',pact.id,'mini-btn'));actions.append(card);}actions.append(makeButton('RECHAZAR Y SEGUIR','continue'));}
-  if(state.screenMode==='event'){scene='event';title.textContent='LA PUERTA SIN MURO';text.textContent='Del otro lado llega el sonido de cartas barajándose bajo el agua.';actions.append(makeButton('ABRIR · +12 LOCURA','event','open'),makeButton('IGNORAR · -5 LOCURA','event','ignore'));}
+  if(state.screenMode==='event'){scene='event';if(state.campaignVersion<2){title.textContent='LA PUERTA SIN MURO';text.textContent='Del otro lado llega el sonido de cartas barajándose bajo el agua.';actions.append(makeButton('ABRIR · +12 LOCURA','event','open'),makeButton('IGNORAR · −5 LOCURA','event','ignore'));}else{const story=EVENTS.find(e=>e.id===state.currentNode?.eventId)||EVENTS[0];title.textContent=story.name;text.textContent=story.text;for(const choice of story.choices)actions.append(makeButton(choice.label,'event',choice.id));}}
+  if(state.screenMode==='sanctuary'){scene='sanctuary';title.textContent='REFUGIO ENTRE MAREAS';text.textContent='La piedra mantiene fuera al océano durante unos minutos. Elige qué quieres recuperar.';actions.append(makeButton('DESCANSAR · −18 LOCURA','sanctuary','rest'),makeButton('PURIFICAR · −1 CORRUPCIÓN','sanctuary','purify'),makeButton('HACER UN TRATO · +20 ECOS · +8 LOCURA','sanctuary','bargain'));}
   if(state.screenMode==='victory'){scene='victory';title.textContent='LA PUERTA CEDE';title.classList.add('victory-mark');text.textContent=`Has atravesado los 8 sectores y derrotado ${state.bossesDefeated} entidades. La expedición ha terminado.`;actions.append(makeButton('NUEVA EXPEDICIÓN','restart'));}
   const art=make('img',`node-art${scene==='victory'?' victory-art':''}`);art.src=`./assets/art/scenes/${NODE_ART[scene]||'route-map'}.svg`;art.alt='';art.setAttribute('aria-hidden','true');
   refs.nodePanel.append(title,text,art,actions);
 }
-function render(state,preview,onToggle){const zone=zoneForEncounter(state.encounter);document.body.dataset.zone=zone.id;document.body.dataset.danger=zone.isBoss?'boss':zone.isElite?'elite':'normal';document.body.dataset.madness=state.madness>=100?'rupture':state.madness>=75?'fracture':state.madness>=50?'distortion':state.madness>=25?'whispers':'stable';refs.sectorEyebrow.textContent=`SECTOR ${zone.zoneIndex+1} · ${zone.name}`;refs.sectorSubtitle.textContent=zone.subtitle;refs.threatBanner.hidden=!(zone.isBoss||zone.isElite);refs.threatBanner.textContent=zone.isBoss?`${battleLabel(state.encounter)} · ${zone.boss.rule}`:`ÉLITE · UMBRAL REFORZADO · +1 LOCURA POR MANO`;refs.table?.style?.setProperty('--sector-image',`url("${new URL(`./assets/art/sectors/${SECTOR_ART[zone.id]||'black-observatory'}`,document.baseURI).href}")`);refs.threatBanner.replaceChildren();if(zone.isBoss){const bossArt=make('img','boss-portrait');bossArt.src=`./assets/art/entities/${BOSS_ART[zone.boss.id]||'blind-astronomer'}.svg`;bossArt.alt=zone.boss.name;refs.threatBanner.append(bossArt,make('span','',`${battleLabel(state.encounter)} · ${zone.boss.rule}`));}else refs.threatBanner.textContent=`ÉLITE · UMBRAL REFORZADO · +1 LOCURA POR MANO`;refs.hand.replaceChildren();for(const card of state.hand)refs.hand.appendChild(renderCard(card,state.selectedIds.has(card.id),onToggle));refs.handName.textContent=preview?.name??'—';refs.baseScore.textContent=preview?.base??0;refs.multiplier.textContent=preview?`×${preview.mult}`:'×0';refs.previewScore.textContent=preview?.score??0;refs.totalScore.textContent=state.totalScore;refs.targetScore.textContent=state.targetScore;refs.handsLeft.textContent=state.handsLeft;refs.discardsLeft.textContent=state.discardsLeft;refs.deckCount.textContent=`MAZO: ${state.deck.length} · DESCARTE: ${state.discardPile.length}`;refs.selectionCount.textContent=`SELECCIONADAS: ${state.selectedIds.size}/5`;refs.corruptionCount.textContent=`CORRUPCIÓN: ${state.hand.reduce((n,c)=>n+(c.corruption||0),0)}`;refs.madnessValue.textContent=`${state.madness}%`;refs.madnessBar.style.width=`${state.madness}%`;refs.madnessTrack?.setAttribute('aria-valuenow',String(state.madness));refs.encounter.textContent=state.encounter;refs.echoes.textContent=state.echoes;if(refs.seedValue)refs.seedValue.textContent=state.seed;const battle=state.screenMode==='battle'&&state.status==='playing';refs.playBtn.disabled=!battle||state.selectedIds.size===0||state.handsLeft<=0;refs.discardBtn.disabled=!battle||state.selectedIds.size===0||state.discardsLeft<=0;renderPowers(state);renderNode(state);}
+function render(state,preview,onToggle){const zone=zoneForEncounter(state.encounter,state.campaignVersion);document.body.dataset.zone=zone.id;document.body.dataset.danger=zone.isBoss?'boss':zone.isElite?'elite':'normal';document.body.dataset.madness=state.madness>=100?'rupture':state.madness>=75?'fracture':state.madness>=50?'distortion':state.madness>=25?'whispers':'stable';refs.sectorEyebrow.textContent=`SECTOR ${zone.zoneIndex+1} · ${zone.name}`;refs.sectorSubtitle.textContent=zone.subtitle;refs.threatBanner.hidden=!(zone.isBoss||zone.isElite);refs.threatBanner.textContent=zone.isBoss?`${battleLabel(state.encounter,state.campaignVersion)} · ${zone.boss.rule}`:`ÉLITE · UMBRAL REFORZADO · +1 LOCURA POR MANO`;refs.table?.style?.setProperty('--sector-image',`url("${new URL(`./assets/art/sectors/${SECTOR_ART[zone.id]||'black-observatory'}`,document.baseURI).href}")`);refs.threatBanner.replaceChildren();if(zone.isBoss){const bossArt=make('img','boss-portrait');bossArt.src=`./assets/art/entities/${BOSS_ART[zone.boss.id]||'blind-astronomer'}.svg`;bossArt.alt=zone.boss.name;refs.threatBanner.append(bossArt,make('span','',`${battleLabel(state.encounter,state.campaignVersion)} · ${zone.boss.rule}`));}else refs.threatBanner.textContent=`ÉLITE · UMBRAL REFORZADO · +1 LOCURA POR MANO`;refs.hand.replaceChildren();for(const card of state.hand)refs.hand.appendChild(renderCard(card,state.selectedIds.has(card.id),onToggle));refs.handName.textContent=preview?.name??'—';refs.baseScore.textContent=preview?.base??0;refs.multiplier.textContent=preview?`×${preview.mult}`:'×0';refs.previewScore.textContent=preview?.score??0;refs.totalScore.textContent=state.totalScore;refs.targetScore.textContent=state.targetScore;refs.handsLeft.textContent=state.handsLeft;refs.discardsLeft.textContent=state.discardsLeft;refs.deckCount.textContent=`MAZO: ${state.deck.length} · DESCARTE: ${state.discardPile.length}`;refs.selectionCount.textContent=`SELECCIONADAS: ${state.selectedIds.size}/5`;refs.corruptionCount.textContent=`CORRUPCIÓN: ${state.hand.reduce((n,c)=>n+(c.corruption||0),0)}`;refs.madnessValue.textContent=`${state.madness}%`;refs.madnessBar.style.width=`${state.madness}%`;refs.madnessTrack?.setAttribute('aria-valuenow',String(state.madness));refs.encounter.textContent=state.encounter;refs.echoes.textContent=state.echoes;if(refs.seedValue)refs.seedValue.textContent=state.seed;const battle=state.screenMode==='battle'&&state.status==='playing';refs.playBtn.disabled=!battle||state.selectedIds.size===0||state.handsLeft<=0;refs.discardBtn.disabled=!battle||state.selectedIds.size===0||state.discardsLeft<=0;renderPowers(state);renderNode(state);}
 function setMessage(text){refs.message.textContent=text;}
 
 function renderMetaPanel(meta,state){if(!refs.metaStats||!refs.codexList)return;refs.metaStats.replaceChildren();const stats=[['FRAGMENTOS',meta.fragments],['RUNS',meta.runs],['VICTORIAS',meta.wins],['MEJOR ENCUENTRO',meta.bestEncounter],['MEJOR PUNTUACIÓN',meta.bestScore],['MANOS TOTALES',meta.totalHands]];for(const [k,v] of stats){const d=make('div','meta-stat');d.append(make('span','',k),make('strong','',String(v)));refs.metaStats.append(d);}refs.codexList.replaceChildren();for(const e of unlockedCodex(meta)){const a=make('article',`codex-entry ${e.unlocked?'unlocked':'locked'}`);a.append(make('small','',e.kind),make('b','',e.unlocked?e.name:'████████'),make('p','',e.unlocked?e.text:'Entrada no descubierta.'));refs.codexList.append(a);}}
@@ -654,16 +694,16 @@ function defaultMeta(){return {version:1,fragments:0,runs:0,wins:0,bestScore:0,b
 function safeNumber(value,fallback=0,min=0,max=Number.MAX_SAFE_INTEGER){const n=Number(value);return Number.isFinite(n)?Math.max(min,Math.min(max,Math.trunc(n))):fallback;}
 function safeSeed(value){return typeof value==='string'?value.slice(0,64):'';}
 function safeUnlocks(value){return Array.isArray(value)?[...new Set(['start',...value.filter(x=>typeof x==='string'&&x.length<=96).slice(0,256)])]:['start'];}
-function safeHistory(value){if(!Array.isArray(value))return [];return value.slice(0,12).map(x=>({seed:safeSeed(x?.seed),encounter:safeNumber(x?.encounter,1,1,24),score:safeNumber(x?.score,0,0,1e15),won:Boolean(x?.won),fragments:safeNumber(x?.fragments,0,0,1e9)}));}
-function sanitizeMeta(raw){const base=defaultMeta();if(!raw||typeof raw!=='object')return base;return {version:1,fragments:safeNumber(raw.fragments,0,0,1e9),runs:safeNumber(raw.runs,0,0,1e9),wins:safeNumber(raw.wins,0,0,1e9),bestScore:safeNumber(raw.bestScore,0,0,1e15),bestEncounter:safeNumber(raw.bestEncounter,1,1,24),totalHands:safeNumber(raw.totalHands,0,0,1e12),totalEchoes:safeNumber(raw.totalEchoes,0,0,1e15),totalMadness:safeNumber(raw.totalMadness,0,0,1e12),lastSeed:safeSeed(raw.lastSeed),unlocks:safeUnlocks(raw.unlocks),history:safeHistory(raw.history)};}
+function safeHistory(value){if(!Array.isArray(value))return [];return value.slice(0,12).map(x=>({seed:safeSeed(x?.seed),encounter:safeNumber(x?.encounter,1,1,32),score:safeNumber(x?.score,0,0,1e15),won:Boolean(x?.won),fragments:safeNumber(x?.fragments,0,0,1e9)}));}
+function sanitizeMeta(raw){const base=defaultMeta();if(!raw||typeof raw!=='object')return base;return {version:1,fragments:safeNumber(raw.fragments,0,0,1e9),runs:safeNumber(raw.runs,0,0,1e9),wins:safeNumber(raw.wins,0,0,1e9),bestScore:safeNumber(raw.bestScore,0,0,1e15),bestEncounter:safeNumber(raw.bestEncounter,1,1,32),totalHands:safeNumber(raw.totalHands,0,0,1e12),totalEchoes:safeNumber(raw.totalEchoes,0,0,1e15),totalMadness:safeNumber(raw.totalMadness,0,0,1e12),lastSeed:safeSeed(raw.lastSeed),unlocks:safeUnlocks(raw.unlocks),history:safeHistory(raw.history)};}
 function loadMeta(storage=safeStorage()){try{return sanitizeMeta(JSON.parse(storage?.getItem(KEY)||'null'));}catch{return defaultMeta();}}
 function saveMeta(meta,storage=safeStorage()){try{storage?.setItem(KEY,JSON.stringify(sanitizeMeta(meta)));return true;}catch{return false;}}
 function addUnlock(meta,id){if(typeof id==='string'&&id.length<=96&&!meta.unlocks.includes(id))meta.unlocks.push(id);}
 function commitRun(meta,state,{won=false}={}){
   meta.runs=safeNumber(meta.runs,0,0,1e9)+1;if(won)meta.wins=safeNumber(meta.wins,0,0,1e9)+1;
-  meta.bestScore=Math.max(safeNumber(meta.bestScore,0,0,1e15),safeNumber(state.totalScore,0,0,1e15));meta.bestEncounter=Math.max(safeNumber(meta.bestEncounter,1,1,24),safeNumber(state.encounter,1,1,24));
+  meta.bestScore=Math.max(safeNumber(meta.bestScore,0,0,1e15),safeNumber(state.totalScore,0,0,1e15));meta.bestEncounter=Math.max(safeNumber(meta.bestEncounter,1,1,32),safeNumber(state.encounter,1,1,32));
   meta.totalHands=safeNumber(meta.totalHands,0,0,1e12)+safeNumber(state.runStats?.handsPlayed??state.turn,0,0,1e7);meta.totalEchoes=safeNumber(meta.totalEchoes,0,0,1e15)+safeNumber(state.runStats?.echoesEarned??state.echoes,0,0,1e12);meta.totalMadness=safeNumber(meta.totalMadness,0,0,1e12)+safeNumber(state.madness,0,0,100);
-  const encounter=safeNumber(state.encounter,1,1,24),bosses=safeNumber(state.bossesDefeated,0,0,8);const fragments=Math.max(1,Math.floor(encounter/2)+(won?20:0)+bosses*2);meta.fragments=safeNumber(meta.fragments,0,0,1e9)+fragments;meta.lastSeed=safeSeed(state.seed);
+  const encounter=safeNumber(state.encounter,1,1,32),bosses=safeNumber(state.bossesDefeated,0,0,8);const fragments=Math.max(1,Math.floor(encounter/2)+(won?20:0)+bosses*2);meta.fragments=safeNumber(meta.fragments,0,0,1e9)+fragments;meta.lastSeed=safeSeed(state.seed);
   if(won)addUnlock(meta,'victory');
   meta.history.unshift({seed:safeSeed(state.seed),encounter,score:safeNumber(state.totalScore,0,0,1e15),won:Boolean(won),fragments});meta.history=safeHistory(meta.history);
   return fragments;
@@ -723,6 +763,7 @@ function restoreRun(payload){
   if(typeof raw.seed!=='string'||!raw.seed.trim())throw new Error('Seed ausente en el save.');
   const state={...raw};
   state.version=safeNumber(raw.version,7,1,999);
+  state.campaignVersion=safeNumber(raw.campaignVersion,state.version>=8?2:1,1,2);
   state.seed=raw.seed.slice(0,64);
   state.targetScore=safeNumber(raw.targetScore,300,1,1e12);
   state.totalScore=safeNumber(raw.totalScore,0,0,1e15);
@@ -730,7 +771,7 @@ function restoreRun(payload){
   state.discardsLeft=safeNumber(raw.discardsLeft,5,0,99);
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
-  state.encounter=safeNumber(raw.encounter,1,1,24);
+  state.encounter=safeNumber(raw.encounter,1,1,32);
   state.bossesDefeated=safeNumber(raw.bossesDefeated,0,0,8);
   state.echoes=safeNumber(raw.echoes,0,0,1e12);
   state.pendingReward=safeNumber(raw.pendingReward,0,0,1e12);
@@ -746,7 +787,7 @@ function restoreRun(payload){
   state.pacts=Array.isArray(raw.pacts)?raw.pacts.map(x=>({...x})).slice(0,16):[];
   state.runStats={handsPlayed:safeNumber(raw.runStats?.handsPlayed,0,0,1e7),echoesEarned:safeNumber(raw.runStats?.echoesEarned,0,0,1e12),maxMadness:safeNumber(raw.runStats?.maxMadness,0,0,100),cardsCorrupted:safeNumber(raw.runStats?.cardsCorrupted,0,0,9999)};
   state.status=['playing','choice','lost','won'].includes(raw.status)?raw.status:'playing';
-  state.screenMode=['battle','reward','route','shop','ritual','event','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
+  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
   state.metaCommitted=Boolean(raw.metaCommitted);
   return state;
 }
@@ -854,7 +895,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.8-art-pwa-update';
+const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.9-art-pwa-update';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){
@@ -873,10 +914,10 @@ return {PWA_CACHE,supportsServiceWorker,isStandalone,registerPwa};
 })();
 // js/app.js
 const m20=(()=>{
-const { newRun, preview, toggleCard, playSelection, discardSelection, claimReward, chooseRoute }=m9;
-const { buyItem, acceptPact, resolveEvent, continueFromNode, useRitual }=m11;
+const { newRun, preview, toggleCard, playSelection, discardSelection, claimReward, chooseRoute }=m10;
+const { buyItem, acceptPact, resolveEvent, resolveSanctuary, continueFromNode, useRitual }=m11;
 const { render, setMessage, renderMetaPanel }=m13;
-const { createSeed, normalizeSeed }=m8;
+const { createSeed, normalizeSeed }=m9;
 const { loadMeta, saveMeta, commitRun, addUnlock }=m15;
 const { saveRun, loadRun, exportSave, importSaveText }=m16;
 const { zoneForEncounter }=m4;
@@ -900,7 +941,7 @@ if(quickGuide&&!guideSeen)quickGuide.open=true;
 quickGuide?.addEventListener('toggle',()=>{if(!quickGuide.open){try{localStorage.setItem('abyssal-quick-guide-seen-rc7','1');}catch{/* Closing the guide must never block play. */}}});
 seedInput.value='';
 
-function unlockFromState(){for(const p of state.pacts)addUnlock(meta,`pact:${p.id}`);const zone=zoneForEncounter(state.encounter);if(state.screenMode==='reward'&&zone.isBoss)addUnlock(meta,`boss:${zone.boss.id}`);}
+function unlockFromState(){for(const p of state.pacts)addUnlock(meta,`pact:${p.id}`);const zone=zoneForEncounter(state.encounter,state.campaignVersion);if(state.screenMode==='reward'&&zone.isBoss)addUnlock(meta,`boss:${zone.boss.id}`);}
 function setSaveStatus(text,kind='ok'){if(!saveStatus)return;saveStatus.textContent=text;saveStatus.dataset.state=kind;}
 function persistRun(){
   const snapshot=JSON.parse(exportSave(state,meta)).run.state;
@@ -918,7 +959,7 @@ function refresh({autosave=true}={}){unlockFromState();maybeCommit();saveMeta(me
 function applyResult(result,{sound='node',fx='transition'}={}){revision++;if(result?.message)setMessage(result.message);if(result?.ok){void audio.sfx(sound);pulseEffect(fx,{enabled:audio.settings.fx});}else if(result?.ok===false){void audio.sfx('error');}refresh();}
 function onToggle(id){applyResult(toggleCard(state,id),{sound:'select',fx:'select'});document.querySelector(`[data-card-id="${id}"]`)?.focus({preventScroll:true});}
 
-playBtn.addEventListener('click',()=>applyResult(playSelection(state),{sound:zoneForEncounter(state.encounter).isBoss?'danger':'play',fx:zoneForEncounter(state.encounter).isBoss?'danger':'score'}));
+playBtn.addEventListener('click',()=>applyResult(playSelection(state),{sound:zoneForEncounter(state.encounter,state.campaignVersion).isBoss?'danger':'play',fx:zoneForEncounter(state.encounter,state.campaignVersion).isBoss?'danger':'score'}));
 discardBtn.addEventListener('click',()=>applyResult(discardSelection(state),{sound:'discard',fx:'discard'}));
 function startNewExpedition(){
   revision++;
@@ -951,7 +992,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)audio.stopM
 exportSaveBtn.addEventListener('click',()=>{const text=exportSave(state,meta);const blob=new Blob([text],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ABYSSAL-HAND-404_${state.seed}_E${state.encounter}.json`;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);setMessage('Save exportado. Incluye expedición y metaprogresión.');});
 importSaveBtn.addEventListener('click',()=>importSaveInput.click());
 importSaveInput.addEventListener('change',async()=>{const file=importSaveInput.files?.[0];importSaveInput.value='';if(!file)return;if(file.size>2_000_000){setMessage('Importación rechazada: el save supera 2 MB.');return;}try{const text=await file.text();const imported=importSaveText(text);revision++;state=imported.state;if(imported.meta){saveMeta(imported.meta);meta=loadMeta();}seedInput.value='';void persistRun();setMessage(`Save importado · encuentro ${state.encounter} · seed ${state.seed}.`);refresh({autosave:false});}catch(error){setSaveStatus('IMPORT: ERROR','error');setMessage(`No se pudo importar: ${error.message}`);}});
-nodePanel.addEventListener('click',event=>{const b=event.target.closest('button[data-action]');if(!b)return;const a=b.dataset.action,v=b.dataset.value;if(a==='claim')applyResult(claimReward(state),{sound:'reward',fx:'reward'});else if(a==='route')applyResult(chooseRoute(state,v),{sound:'node',fx:'transition'});else if(a==='buy')applyResult(buyItem(state,v),{sound:'reward',fx:'reward'});else if(a==='pact'){const r=acceptPact(state,v);if(r.ok){addUnlock(meta,`pact:${v}`);saveMeta(meta);continueFromNode(state);if(v==='void-pact')state.madness=Math.min(100,state.madness+8);}applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='event'){const r=resolveEvent(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'danger',fx:'danger'});}else if(a==='continue')applyResult(continueFromNode(state),{sound:'node',fx:'transition'});else if(a==='restart')startNewExpedition();});
+nodePanel.addEventListener('click',event=>{const b=event.target.closest('button[data-action]');if(!b)return;const a=b.dataset.action,v=b.dataset.value;if(a==='claim')applyResult(claimReward(state),{sound:'reward',fx:'reward'});else if(a==='route')applyResult(chooseRoute(state,v),{sound:'node',fx:'transition'});else if(a==='buy')applyResult(buyItem(state,v),{sound:'reward',fx:'reward'});else if(a==='pact'){const r=acceptPact(state,v);if(r.ok){addUnlock(meta,`pact:${v}`);saveMeta(meta);continueFromNode(state);if(v==='void-pact')state.madness=Math.min(100,state.madness+8);}applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='event'){const r=resolveEvent(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'danger',fx:'danger'});}else if(a==='sanctuary'){const r=resolveSanctuary(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='continue')applyResult(continueFromNode(state),{sound:'node',fx:'transition'});else if(a==='restart')startNewExpedition();});
 powers.addEventListener('click',event=>{const chip=event.target.closest('.power-chip.ritual');if(!chip)return;const ritual=state.rituals.find(r=>r.id===chip.dataset.ritualId);if(ritual)applyResult(useRitual(state,ritual.id),{sound:'ritual',fx:'reward'});});
 
 setFxMode(audio.settings.fx);audioBtn.textContent=`AUDIO: ${audio.settings.audio?'ON':'OFF'}`;audioBtn.setAttribute('aria-pressed',String(audio.settings.audio));fxBtn.textContent=`CRT FX: ${audio.settings.fx?'ON':'OFF'}`;fxBtn.setAttribute('aria-pressed',String(audio.settings.fx));if(audio.settings.audio)void audio.startMusic();

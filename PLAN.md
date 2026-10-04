@@ -1,4 +1,13 @@
-# Estado de entrega — 1.0.0-rc.8
+# Estado de entrega — 1.0.0-rc.9
+
+## rc.9 — campaña larga y decisiones
+
+- [x] Ampliar a 32 encuentros y respetar saves con el mapa antiguo de 24.
+- [x] Ofrecer cuatro rutas por cruce, ocho eventos y tres acciones en refugios.
+- [x] Ampliar tienda con reliquias y efectos conectados a las reglas.
+- [x] Validar pruebas automatizadas y rebuild del bundle.
+- [ ] Jugar campaña completa y ajustar dificultad según duración real.
+- [ ] Probar Safari/iPhone e instalación PWA nativa.
 
 ## rc.8 — arte y ciclo de actualización PWA
 

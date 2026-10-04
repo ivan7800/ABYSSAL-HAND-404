@@ -1,4 +1,13 @@
-# QA — ABYSSAL HAND 404 rc.8
+# QA — ABYSSAL HAND 404 rc.9
+
+## rc.9 — campaña expandida
+
+- La versión nueva usa 32 encuentros; el guardado versionado conserva el esquema de 24 encuentros para partidas anteriores.
+- Las rutas presentan cuatro elecciones; ocho eventos aplican recompensas/costes; el refugio valida descanso, purificación y trato.
+- Las reliquias Corazón de Coral, Brújula de Tinta y Sello del Despertar modifican manos, descartes y recuperación.
+- `npm test`: PASS (suite completa de lógica, guardado, UX estática, arte y regresiones).
+- `npm run build`: PASS (21 módulos empaquetados).
+- Pendiente: Playwright visual de esta revisión y recorrido manual de los 32 encuentros para validar balance y ritmo.
 
 ## rc.8 — actualización PWA
 
