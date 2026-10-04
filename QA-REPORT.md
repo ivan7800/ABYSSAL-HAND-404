@@ -1,4 +1,21 @@
-# QA — ABYSSAL HAND 404 rc.6
+# QA — ABYSSAL HAND 404 rc.7
+
+## rc.7 — cambios y verificaciones de esta entrega
+
+- Ocho IDs de jefe apuntan a ocho SVG diferentes; seis pantallas narrativas tienen ilustraciones dedicadas.
+- El conjunto de SVG se valida como XML correcto y queda por debajo de 30 KB.
+- La guía rápida se abre en la primera visita y permite continuar sin `localStorage`.
+- Victoria y derrota presentan una pantalla final y una acción para crear otra expedición.
+- Los 14 SVG se incluyen en el precache PWA y se genera un bundle actualizado.
+- Se ejecutan `npm run build`, `npm test` y comprobaciones estáticas/XML de recursos.
+- No se pudo ejecutar Playwright en Chromium en este entorno (falta el ejecutable); no se declara un recorrido manual completo ni certificación de móvil/Safari.
+- La actualización de `main` se verificará por API. GitHub Pages puede tardar en reflejarla; solo se dará por publicada la página cuando se compruebe su URL.
+
+## Límites conocidos
+
+- No se certificó una campaña completa desde la primera mano hasta la victoria, ni se evaluó el equilibrio mediante varias partidas largas.
+- El acabado visual en navegador y la instalación PWA siguen pendientes de validación en equipos reales.
+- Las comprobaciones históricas de Chromium en rc.5 no se presentan como pruebas de esta RC.
 
 ## Cambios de esta revisión
 

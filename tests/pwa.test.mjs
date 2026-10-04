@@ -12,7 +12,7 @@ t('scope relativo',()=>assert.equal(manifest.scope,'./'));
 t('dos iconos PWA',()=>assert.deepEqual(manifest.icons.map(x=>x.sizes),['192x192','512x512']));
 const sw=fs.readFileSync(new URL('../sw.js',import.meta.url),'utf8');
 t('SW limpia caches antiguas',()=>assert.match(sw,/caches\.delete/));
-t('SW precachea manifest y arte original',()=>{assert.match(sw,/manifest\.webmanifest/);for(const a of ['abyss-eye.webp','drowned-oracle.webp','star-parasite.webp','void-saint.webp','drowned-port.webp','sunken-library.webp','moonless-forest.webp','black-observatory.webp'])assert.ok(sw.includes(a),`falta ${a} en precache`);});
+t('SW precachea manifest y arte original',()=>{assert.match(sw,/manifest\.webmanifest/);for(const a of ['abyss-eye.webp','drowned-oracle.webp','star-parasite.webp','void-saint.webp','drowned-port.webp','sunken-library.webp','moonless-forest.webp','black-observatory.webp','blind-astronomer.svg','beyond-the-gate.svg'])assert.ok(sw.includes(a),`falta ${a} en precache`);});
 t('SW tiene fallback de navegación',()=>assert.match(sw,/mode==='navigate'/));
 t('SW usa network-first',()=>assert.match(sw,/fetch\(event\.request\)/));
 console.log(`PWA TESTS: ${n}/11 PASS`);

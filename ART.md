@@ -1,5 +1,12 @@
 # Arte adicional rc.5
 
+## Nuevos recursos vectoriales rc.7
+
+- Ocho retratos SVG originales, uno por jefe, en `assets/art/entities/`.
+- Seis ilustraciones SVG de escena para senda, mercado, altar, evento, victoria y derrota en `assets/art/scenes/`.
+- Los 14 recursos pesan menos de 30 KB en conjunto, no usan imágenes o fuentes remotas y se precargan mediante el Service Worker.
+- Los retratos acompañan las reglas de los jefes; las escenas dan identidad a los encuentros no bélicos y a los finales.
+
 Generado con la herramienta integrada de generación de imágenes. PNG original, sin recortes ni recoloreados, servido localmente. Se mantienen las ilustraciones anteriores.
 
 ## Archivos y prompts de dirección artística

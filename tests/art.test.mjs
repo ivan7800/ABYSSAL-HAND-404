@@ -9,6 +9,7 @@ const files=[
  'assets/art/sectors/drowned-port.webp','assets/art/sectors/sunken-library.webp','assets/art/sectors/moonless-forest.webp','assets/art/sectors/black-observatory.webp'
 ];
 for(const file of files)assert.ok(fs.existsSync(new URL(`../${file}`,import.meta.url)),`missing art ${file}`);
+for(const file of ['blind-astronomer','abyssal-mother','faceless-king','devourer','sleeper','mirror-saint','black-choir','the-gate'])assert.ok(fs.existsSync(new URL(`../assets/art/entities/${file}.svg`,import.meta.url)),`missing distinct boss portrait ${file}`);
 assert.match(render,/--sector-image/);
 assert.match(render,/boss-portrait/);
 assert.match(css,/var\(--sector-image\)/);

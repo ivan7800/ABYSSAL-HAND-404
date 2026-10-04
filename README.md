@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.6 QUICK GUIDE
+# ABYSSAL HAND 404 — 1.0.0-rc.7 ABYSSAL ART PASS
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -10,9 +10,18 @@ Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni depe
 4. **NUEVA EXPEDICIÓN** empieza inmediatamente y genera una semilla diferente.
 5. Para una partida reproducible, escribe una semilla antes de comenzar o pulsa **REPETIR SEMILLA**.
 
+En la primera expedición, la guía se abre automáticamente. Al cerrarla, la elección se recuerda. Al ganar o perder aparece una pantalla final ilustrada con un botón para comenzar otra partida.
+
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Qué incluye rc.7
+
+- Ocho retratos distintos, uno para cada jefe, y seis escenas ilustradas para rutas, mercado, altar, evento, victoria y derrota.
+- Guía rápida visible al comienzo de la primera partida y recordada al cerrarla.
+- Pantallas de victoria y derrota con salida clara para una nueva expedición.
+- Arte SVG local, ligero y precargado por el Service Worker para funcionar sin conexión.
 
 ## Qué incluye rc.6
 

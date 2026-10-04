@@ -1,4 +1,12 @@
-# Estado de entrega — 1.0.0-rc.6
+# Estado de entrega — 1.0.0-rc.7
+
+## rc.7 — pase visual y finales
+
+- Ocho retratos de jefe sin reutilización y seis escenas de nodo y finales.
+- Guía de primer uso de una sola vez, con persistencia segura si el almacenamiento está permitido.
+- Acciones de nueva expedición disponibles al terminar en victoria o derrota.
+- Pruebas de integración para unicidad, rutas, guía, reinicio y caché offline.
+- Pendiente tras subir: probar la web publicada en navegador y recorrer una campaña completa antes de certificar el equilibrio.
 
 ## rc.6 — guía rápida integrada
 

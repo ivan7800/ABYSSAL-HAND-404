@@ -114,3 +114,13 @@ button:focus-visible,.card:focus-visible,.node-btn:focus-visible,.mini-btn:focus
 .hand-reference li{display:flex;justify-content:space-between;gap:8px}.hand-reference span{color:var(--c64-cyan);white-space:nowrap}
 .guide-note{color:#aaa2ce;font-size:.72rem}
 @media(max-width:600px){.guide-content{font-size:.75rem;padding:0 12px 12px}.hand-reference{grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px}}
+
+/* RC.7 · unique entities, illustrated story nodes, and clear end-of-run states. */
+.boss-portrait{padding:0;background:#09070f;image-rendering:pixelated}
+.node-panel{border-color:var(--zone-accent,var(--c64-yellow));background:linear-gradient(140deg,#111020f5,#080710f7)}
+.node-art{height:clamp(120px,24vw,210px);background:#09070f;image-rendering:auto;object-fit:cover;object-position:center 42%;box-shadow:0 0 30px color-mix(in srgb,var(--zone-accent,var(--c64-purple)) 27%,transparent);}
+.node-panel[hidden]{display:none!important}
+.victory-mark{color:var(--c64-light-green)}
+.defeat-mark{color:#ff8c9b;text-shadow:2px 2px 0 #571c36}
+.node-panel .node-actions{margin-top:8px}
+@media(max-width:520px){.node-art{height:138px;margin-bottom:10px}.node-panel{padding:10px}.node-title{font-size:1rem}}

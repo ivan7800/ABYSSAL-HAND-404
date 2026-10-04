@@ -1,5 +1,14 @@
 # Historial
 
+## 1.0.0-rc.7 — ABYSSAL ART PASS
+
+- Se añadieron retratos SVG únicos para los ocho jefes; el peso total es inferior a 30 KB.
+- Mercado, altar, rutas, evento, victoria y derrota tienen una ilustración de escena propia, también precargada para jugar sin conexión.
+- La guía se abre una vez en una expedición nueva y recuerda cuando se cierra; no bloquea el juego si el almacenamiento está desactivado.
+- Se añadió una pantalla de derrota y acciones claras para volver a empezar tras victoria o derrota.
+- Se actualizó el bundle, las rutas con versión y la caché PWA para rc.7.
+- Añadidas pruebas de integración para arte único, escenas, guía, reinicio y caché offline.
+
 
 ## 1.0.0-rc.6 — QUICK GUIDE
 
