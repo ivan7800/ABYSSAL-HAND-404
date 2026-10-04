@@ -1,7 +1,7 @@
-const CACHE='abyssal-hand-404-v1.0.0-rc.7-art-experience';
+const CACHE='abyssal-hand-404-v1.0.0-rc.8-art-pwa-update';
 const CORE=[
-  './','./index.html','./css/core.css?v=1.0.0-rc.7','./css/core.css','./manifest.webmanifest',
-  './js/app.bundle.js?v=1.0.0-rc.7','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
+  './','./index.html','./css/core.css?v=1.0.0-rc.8','./css/core.css','./manifest.webmanifest',
+  './js/app.bundle.js?v=1.0.0-rc.8','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
   './js/core/game.js','./js/core/rng.js','./js/core/state.js','./js/economy/content.js',
   './js/gameplay/bosses.js','./js/gameplay/meta.js','./js/gameplay/progression.js','./js/gameplay/zones.js',
   './js/meta/codex.js','./js/persistence/meta-store.js','./js/persistence/run-store.js',
@@ -13,6 +13,7 @@ const CORE=[
  './assets/art/entities/blind-astronomer.svg','./assets/art/entities/abyssal-mother.svg','./assets/art/entities/faceless-king.svg','./assets/art/entities/devourer.svg','./assets/art/entities/sleeper.svg','./assets/art/entities/mirror-saint.svg','./assets/art/entities/black-choir.svg','./assets/art/entities/the-gate.svg',
  './assets/art/scenes/route-map.svg','./assets/art/scenes/drowned-market.svg','./assets/art/scenes/nameless-altar.svg','./assets/art/scenes/wall-less-door.svg','./assets/art/scenes/beyond-the-gate.svg','./assets/art/scenes/the-last-signal.svg'
 ];
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')void self.skipWaiting();});
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('abyssal-hand-404-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{

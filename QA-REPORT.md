@@ -1,4 +1,14 @@
-# QA — ABYSSAL HAND 404 rc.7
+# QA — ABYSSAL HAND 404 rc.8
+
+## rc.8 — actualización PWA
+
+- El botón **ACTUALIZAR** solo se muestra cuando `registration.waiting` existe.
+- Su acción manda `SKIP_WAITING`; el cambio de controlador recarga la página.
+- Si el Service Worker se activa solo, el cambio de controlador también recarga.
+- `npm run build`: PASS, bundle de 21 módulos.
+- `npm test`: PASS; 36 comprobaciones de botones/acciones, experiencia, arte y caché PWA incluidas.
+- Validación visual directa de rc.7 en GitHub Pages: guía abierta en primera visita, mesa y fondo cargados, sin errores de la app visibles en consola.
+- La prueba Playwright completa de campaña y la interacción del botón de actualización en navegador quedan pendientes; no se marca como certificada.
 
 ## rc.7 — cambios y verificaciones de esta entrega
 

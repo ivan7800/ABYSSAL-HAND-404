@@ -1,5 +1,13 @@
 # Historial
 
+## 1.0.0-rc.8 — PWA UPDATE ACTION
+
+- La inspección de GitHub Pages reveló que el aviso de actualización no ofrecía una acción.
+- Se añadió el botón **ACTUALIZAR** cuando el Service Worker nuevo está esperando; al pulsarlo, activa la versión y recarga cuando cambia el controlador.
+- Si la versión nueva se activa automáticamente, la página se recarga para no dejar una UI antigua bajo una caché nueva.
+- Se versionaron referencias de CSS/JS y caché PWA para rc.8; se probaron el build, la suite funcional y el enlace del botón.
+
+
 ## 1.0.0-rc.7 — ABYSSAL ART PASS
 
 - Se añadieron retratos SVG únicos para los ocho jefes; el peso total es inferior a 30 KB.

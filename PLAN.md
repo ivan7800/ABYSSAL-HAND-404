@@ -1,4 +1,10 @@
-# Estado de entrega — 1.0.0-rc.7
+# Estado de entrega — 1.0.0-rc.8
+
+## rc.8 — arte y ciclo de actualización PWA
+
+- Conserva el arte y los finales claros añadidos en rc.7.
+- Añade una acción para activar una versión PWA pendiente y recargar de forma controlada.
+- Revalida el botón y los recursos cacheados.
 
 ## rc.7 — pase visual y finales
 

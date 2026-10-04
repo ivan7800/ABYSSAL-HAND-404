@@ -854,7 +854,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.7-art-experience';
+const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.8-art-pwa-update';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){
@@ -889,7 +889,10 @@ const audio=createAudioEngine();
 let installPrompt=null;
 let revision=0;
 let saveQueue=Promise.resolve();
-const playBtn=document.querySelector('#playBtn'),discardBtn=document.querySelector('#discardBtn'),newRunBtn=document.querySelector('#newRunBtn'),continueRunBtn=document.querySelector('#continueRunBtn'),exportSaveBtn=document.querySelector('#exportSaveBtn'),importSaveBtn=document.querySelector('#importSaveBtn'),importSaveInput=document.querySelector('#importSaveInput'),saveStatus=document.querySelector('#saveStatus'),nodePanel=document.querySelector('#nodePanel'),powers=document.querySelector('#powers'),seedInput=document.querySelector('#seedInput'),metaPanel=document.querySelector('#metaPanel'),codexBtn=document.querySelector('#codexBtn'),audioBtn=document.querySelector('#audioBtn'),fxBtn=document.querySelector('#fxBtn'),installBtn=document.querySelector('#installBtn'),pwaStatus=document.querySelector('#pwaStatus');
+const playBtn=document.querySelector('#playBtn'),discardBtn=document.querySelector('#discardBtn'),newRunBtn=document.querySelector('#newRunBtn'),continueRunBtn=document.querySelector('#continueRunBtn'),exportSaveBtn=document.querySelector('#exportSaveBtn'),importSaveBtn=document.querySelector('#importSaveBtn'),importSaveInput=document.querySelector('#importSaveInput'),saveStatus=document.querySelector('#saveStatus'),nodePanel=document.querySelector('#nodePanel'),powers=document.querySelector('#powers'),seedInput=document.querySelector('#seedInput'),metaPanel=document.querySelector('#metaPanel'),codexBtn=document.querySelector('#codexBtn'),audioBtn=document.querySelector('#audioBtn'),fxBtn=document.querySelector('#fxBtn'),installBtn=document.querySelector('#installBtn'),updateAppBtn=document.querySelector('#updateAppBtn'),pwaStatus=document.querySelector('#pwaStatus');
+let updateRegistration=null,updateReloadRequested=false;
+const hadServiceWorkerController=Boolean(navigator.serviceWorker?.controller);
+navigator.serviceWorker?.addEventListener('controllerchange',()=>{if(hadServiceWorkerController||updateReloadRequested)location.reload();});
 const quickGuide=document.querySelector('.quick-guide');
 let guideSeen=false;
 try{guideSeen=localStorage.getItem('abyssal-quick-guide-seen-rc7')==='1';}catch{/* A blocked store should not hide first-run help. */}
@@ -942,6 +945,7 @@ audioBtn.addEventListener('click',async()=>{const enabled=await audio.setAudio(!
 fxBtn.addEventListener('click',()=>{const enabled=audio.setFx(!audio.settings.fx);setFxMode(enabled);fxBtn.textContent=`CRT FX: ${enabled?'ON':'OFF'}`;fxBtn.setAttribute('aria-pressed',String(enabled));pulseEffect('transition',{enabled});});
 window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;installBtn.hidden=false;pwaStatus.textContent='PWA: LISTA PARA INSTALAR';});
 installBtn.addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();const choice=await installPrompt.userChoice;installPrompt=null;installBtn.hidden=true;pwaStatus.textContent=choice.outcome==='accepted'?'PWA: INSTALACIÓN ACEPTADA':'PWA: INSTALACIÓN CANCELADA';});
+updateAppBtn.addEventListener('click',()=>{if(updateRegistration?.waiting){updateReloadRequested=true;pwaStatus.textContent='PWA: ACTUALIZANDO';updateRegistration.waiting.postMessage({type:'SKIP_WAITING'});}else location.reload();});
 window.addEventListener('appinstalled',()=>{installBtn.hidden=true;pwaStatus.textContent='PWA: INSTALADA';});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)audio.stopMusic();else if(audio.settings.audio)void audio.startMusic();});
 exportSaveBtn.addEventListener('click',()=>{const text=exportSave(state,meta);const blob=new Blob([text],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ABYSSAL-HAND-404_${state.seed}_E${state.encounter}.json`;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);setMessage('Save exportado. Incluye expedición y metaprogresión.');});
@@ -963,7 +967,7 @@ async function boot(){
   else if(!loaded.ok){setMessage(`Autosave dañado o inaccesible: ${loaded.error}. Se mantiene una expedición segura nueva.`);setSaveStatus('AUTOSAVE NO DISPONIBLE','error');refresh();}
   else{setMessage(`La expedición comienza · seed ${state.seed}.`);refresh();}
 
-  const pwa=await registerPwa({onUpdate:()=>{pwaStatus.textContent='PWA: ACTUALIZACIÓN DISPONIBLE';}});
+  const pwa=await registerPwa({onUpdate:reg=>{if(reg?.waiting){updateRegistration=reg;updateAppBtn.hidden=false;pwaStatus.textContent='PWA: ACTUALIZACIÓN LISTA';}else pwaStatus.textContent='PWA: ACTUALIZADA';}});
   pwaStatus.textContent=isStandalone()?'PWA: INSTALADA':pwa.ok?'PWA: OFFLINE READY':location.protocol==='file:'?'MODO LOCAL':'PWA: NO DISPONIBLE';
 }
 document.body.dataset.ready='true';

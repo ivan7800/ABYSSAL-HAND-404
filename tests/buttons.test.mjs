@@ -10,7 +10,7 @@ const app=fs.readFileSync(new URL('../js/app.js',import.meta.url),'utf8');
 const render=fs.readFileSync(new URL('../js/ui/render.js',import.meta.url),'utf8');
 let n=0; const t=async(name,fn)=>{await fn();n++;console.log(`PASS ${name}`)};
 
-const boundIds=['playBtn','discardBtn','newRunBtn','continueRunBtn','codexBtn','audioBtn','fxBtn','installBtn','exportSaveBtn','importSaveBtn','importSaveInput','nodePanel','powers'];
+const boundIds=['playBtn','discardBtn','newRunBtn','continueRunBtn','codexBtn','audioBtn','fxBtn','installBtn','updateAppBtn','exportSaveBtn','importSaveBtn','importSaveInput','nodePanel','powers'];
 for(const id of boundIds){t(`binding ${id}`,()=>{assert.match(html,new RegExp(`id=["']${id}["']`));assert.match(app,new RegExp(`${id}\\.addEventListener`));});}
 
 await t('listeners se registran antes del boot async',()=>{assert.ok(app.indexOf("playBtn.addEventListener")<app.indexOf('void boot()'));});
@@ -36,6 +36,7 @@ await t('CÓDICE tiene listener de toggle',()=>assert.match(app,/codexBtn\.addEv
 await t('AUDIO cambia setting incluso sin AudioContext',()=>{const mem={getItem:()=>null,setItem:()=>{}};const e=createAudioEngine({storage:mem,AudioContextImpl:null});return e.setAudio(true).then(v=>assert.equal(v,true));});
 await t('CRT FX tiene listener y estado persistible',()=>{assert.match(app,/fxBtn\.addEventListener\('click'/);assert.match(app,/audio\.setFx/);});
 await t('INSTALAR PWA es condicional a beforeinstallprompt',()=>{assert.match(app,/beforeinstallprompt/);assert.match(app,/installPrompt\.prompt/);});
+await t('ACTUALIZAR PWA ofrece acción y recarga tras cambio de controlador',()=>{assert.match(app,/updateAppBtn\.addEventListener\('click'/);assert.match(app,/postMessage\(\{type:'SKIP_WAITING'\}\)/);assert.match(app,/controllerchange/);});
 await t('botones dinámicos usan data-action + delegación',()=>{assert.match(render,/dataset\.action=action/);assert.match(app,/closest\('button\[data-action\]'\)/);});
 
 console.log(`BUTTON/ACTION TESTS: ${n} PASS`);

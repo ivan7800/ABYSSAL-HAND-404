@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.7 ABYSSAL ART PASS
+# ABYSSAL HAND 404 — 1.0.0-rc.8 ART + PWA UPDATE
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -15,6 +15,11 @@ En la primera expedición, la guía se abre automáticamente. Al cerrarla, la el
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Qué incluye rc.8
+
+- Las mejoras visuales de rc.7 y un flujo claro para instalar la actualización PWA.
+- Si hay un Service Worker nuevo esperando, aparece **ACTUALIZAR**; al aplicarlo la pestaña carga la versión nueva automáticamente.
 
 ## Qué incluye rc.7
 

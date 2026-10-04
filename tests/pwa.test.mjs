@@ -15,4 +15,5 @@ t('SW limpia caches antiguas',()=>assert.match(sw,/caches\.delete/));
 t('SW precachea manifest y arte original',()=>{assert.match(sw,/manifest\.webmanifest/);for(const a of ['abyss-eye.webp','drowned-oracle.webp','star-parasite.webp','void-saint.webp','drowned-port.webp','sunken-library.webp','moonless-forest.webp','black-observatory.webp','blind-astronomer.svg','beyond-the-gate.svg'])assert.ok(sw.includes(a),`falta ${a} en precache`);});
 t('SW tiene fallback de navegación',()=>assert.match(sw,/mode==='navigate'/));
 t('SW usa network-first',()=>assert.match(sw,/fetch\(event\.request\)/));
-console.log(`PWA TESTS: ${n}/11 PASS`);
+t('SW acepta el botón de aplicar actualización',()=>assert.match(sw,/event\.data\?\.type==='SKIP_WAITING'/));
+console.log(`PWA TESTS: ${n}/12 PASS`);

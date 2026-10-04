@@ -15,5 +15,6 @@ assert.match(render,/makeButton\('INTENTAR DE NUEVO','restart'\)/);
 assert.match(render,/makeButton\('NUEVA EXPEDICIÓN','restart'\)/);
 assert.match(app,/else if\(a==='restart'\)startNewExpedition\(\)/);
 assert.match(app,/abyssal-quick-guide-seen-rc7/);
+assert.match(app,/updateAppBtn\.addEventListener/);
 for(const id of [...bossIds,...sceneIds])assert.ok(sw.includes(`${id}.svg`),`offline cache missing: ${id}`);
 console.log(`EXPERIENCE TESTS: ${bossIds.length} distinct bosses + ${sceneIds.length} scenes + guide/end-run flows/offline cache PASS`);
