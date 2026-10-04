@@ -6,6 +6,11 @@
 - Se conserva cerrada al inicio; usa `<details>/<summary>` nativos, texto semántico, foco visible y rejilla responsive.
 - Se versionaron URLs de CSS/JS y caché PWA a rc.6 para evitar que el despliegue reciba estilos antiguos.
 
+## Publicación rc.6
+
+- Código subido a `main` en el commit `bcab0f1d6a9e43aa384260a8e2bde8074a169109`.
+- GitHub API confirma `index.html` con la guía y los recursos `rc.6` y `sw.js` con caché nueva. La URL pública no se pudo comprobar con la herramienta web durante esta sesión.
+
 ## Verificación rc.6
 
 - `npm run build`: PASS; generó el bundle desde 21 módulos locales.

@@ -5,6 +5,6 @@
 3. Abre la URL del repositorio y comprueba `v1.0.0-rc.6 · QUICK GUIDE` en el pie.
 4. Si ves otra versión, recarga con Ctrl+F5. No borres los datos del navegador sin exportar antes la partida.
 
-Las rutas son relativas y la prueba automatizada sirve la app en `/test-subpath/`. La actualización rc.4→rc.5 (evidencia de la versión base) se probó con un Service Worker previo. No se ha desplegado este ZIP en la cuenta GitHub del usuario.
+Las rutas son relativas y la prueba automatizada sirve la app en `/test-subpath/`. La actualización rc.4→rc.5 (evidencia de la versión base) se probó con un Service Worker previo. La rc.6 está subida a `main` (commit `bcab0f1`); el HTML y el Service Worker remotos se verificaron. Comprueba que Pages muestre `v1.0.0-rc.6` cuando termine de publicar.
 
 El HTML carga el bundle clásico. Se puede jugar también por doble clic; instalación/offline PWA requieren HTTPS/localhost. Cada publicación futura debe regenerar el bundle y actualizar caché y referencias de versión.
