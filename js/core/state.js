@@ -1,0 +1,31 @@
+export function createInitialState() {
+  return {
+    version: 7,
+    seed: '',
+    targetScore: 300,
+    totalScore: 0,
+    handsLeft: 4,
+    discardsLeft: 5,
+    deck: [],
+    hand: [],
+    discardPile: [],
+    selectedIds: new Set(),
+    status: 'playing',
+    screenMode: 'battle',
+    lastResult: null,
+    madness: 0,
+    turn: 0,
+    encounter: 1,
+    bossesDefeated: 0,
+    echoes: 0,
+    routeOptions: [],
+    currentNode: null,
+    pendingReward: 0,
+    entities: [{ id: 'watching-eye', name: 'El Ojo que no duerme' }],
+    relics: [{ id: 'salt-lamp', name: 'Lámpara de sal' }],
+    rituals: [],
+    pacts: [],
+    runStats: { handsPlayed:0, echoesEarned:0, maxMadness:0, cardsCorrupted:0 },
+    metaCommitted: false
+  };
+}

@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { makeSeededRandom, normalizeSeed } from '../js/core/rng.js';
+import { newRun } from '../js/core/game.js';
+import { defaultMeta, commitRun, addUnlock, loadMeta, saveMeta, sanitizeMeta } from '../js/persistence/meta-store.js';
+import { unlockedCodex } from '../js/meta/codex.js';
+
+const a=makeSeededRandom('ABYSS-TEST'),b=makeSeededRandom('ABYSS-TEST');
+for(let i=0;i<8;i++) assert.equal(a(),b());
+assert.equal(normalizeSeed(' abyss test! '),'ABYSSTEST');
+const r1=newRun('ABYSS-SAME'),r2=newRun('ABYSS-SAME');
+assert.deepEqual(r1.hand.map(c=>c.id),r2.hand.map(c=>c.id));
+assert.equal(r1.seed,'ABYSS-SAME');
+let meta=defaultMeta();addUnlock(meta,'pact:blood-pact');addUnlock(meta,'pact:blood-pact');assert.equal(meta.unlocks.filter(x=>x==='pact:blood-pact').length,1);
+r1.encounter=9;r1.totalScore=4321;r1.bossesDefeated=3;r1.runStats.handsPlayed=12;r1.runStats.echoesEarned=77;r1.madness=66;
+const fr=commitRun(meta,r1,{won:false});assert.ok(fr>=1);assert.equal(meta.runs,1);assert.equal(meta.bestEncounter,9);assert.equal(meta.bestScore,4321);assert.equal(meta.totalHands,12);assert.equal(meta.totalEchoes,77);
+commitRun(meta,{...r1,encounter:24,totalScore:9999,bossesDefeated:8,seed:'FINAL',runStats:r1.runStats},{won:true});assert.equal(meta.wins,1);assert.ok(meta.unlocks.includes('victory'));
+const memory={v:null,setItem(k,v){this.v=v},getItem(){return this.v}};assert.equal(saveMeta(meta,memory),true);const loaded=loadMeta(memory);assert.equal(loaded.wins,1);assert.equal(loaded.history.length,2);
+const poisoned=sanitizeMeta({fragments:'999999999999999999999',runs:'oops',lastSeed:{bad:true},unlocks:['start',42,'x'.repeat(120)],history:[{seed:'S',encounter:999,score:-2,won:'yes',fragments:-4}],unknown:'drop-me'});assert.equal(poisoned.fragments,1e9);assert.equal(poisoned.runs,0);assert.equal(poisoned.lastSeed,'');assert.equal(poisoned.bestEncounter,1);assert.equal(poisoned.history[0].encounter,24);assert.equal(poisoned.history[0].score,0);assert.equal('unknown' in poisoned,false);
+const codex=unlockedCodex(loaded);assert.ok(codex.find(x=>x.id==='ending-gate').unlocked);assert.ok(codex.find(x=>x.id==='pact-blood').unlocked);
+console.log('PASS: 24 comprobaciones de seeds/metaprogresión/códice');

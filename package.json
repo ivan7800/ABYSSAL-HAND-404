@@ -1,0 +1,11 @@
+{
+  "name": "abyssal-hand-404",
+  "version": "1.0.0-rc.5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node ./tests/poker.test.mjs && node ./tests/systems.test.mjs && node ./tests/game.test.mjs && node ./tests/progression.test.mjs && node ./tests/zones.test.mjs && node ./tests/meta.test.mjs && node ./tests/save.test.mjs && node ./tests/av.test.mjs && node ./tests/pwa.test.mjs && node ./tests/hardening.test.mjs && node ./tests/buttons.test.mjs && node ./tests/art.test.mjs && node ./tests/regressions.test.mjs",
+    "build": "node scripts/build.mjs",
+    "test:browser": "node tests/browser.test.mjs"
+  }
+}

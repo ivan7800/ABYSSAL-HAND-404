@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {AUDIO_SEQUENCE,SFX_PATTERNS,clampVolume,loadAvSettings,saveAvSettings,createAudioEngine} from '../js/audio/audio.js';
+let n=0;const t=(name,fn)=>{fn();n++;console.log('PASS',name)};
+t('secuencia SID tiene 8 pasos',()=>assert.equal(AUDIO_SEQUENCE.length,8));
+t('SFX básicos definidos',()=>{for(const k of ['select','play','discard','reward','danger','ritual','error'])assert.ok(SFX_PATTERNS[k]?.length)});
+t('volumen limita mínimo',()=>assert.equal(clampVolume(-2),0));
+t('volumen limita máximo',()=>assert.equal(clampVolume(4),1));
+t('volumen inválido usa fallback',()=>assert.equal(clampVolume('x'),.32));
+const mem=new Map(),storage={getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v)};
+t('settings por defecto audio OFF',()=>assert.equal(loadAvSettings(storage).audio,false));
+t('settings persistibles',()=>{saveAvSettings({audio:true,fx:false,volume:.2},storage);assert.equal(loadAvSettings(storage).fx,false)});
+t('engine degrada sin AudioContext',()=>{const e=createAudioEngine({storage,AudioContextImpl:null});assert.equal(e.isAvailable,false)});
+await (async()=>{const mem={getItem:()=>null,setItem:()=>{}};const e=createAudioEngine({storage:mem,AudioContextImpl:null});await e.setAudio(true);const ok=await e.startMusic();if(ok!==false)throw new Error('startMusic debe degradar sin AudioContext');n++;console.log('PASS startMusic degrada sin AudioContext');})();
+console.log(`AV TESTS: ${n}/9 PASS`);

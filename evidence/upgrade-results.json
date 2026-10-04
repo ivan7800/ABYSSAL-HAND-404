@@ -1,0 +1,9 @@
+{
+  "name": "Actualización rc.4 → rc.5 con SW existente",
+  "result": "PASS",
+  "caches": [
+    "abyssal-hand-404-v1.0.0-rc.4-art-pass",
+    "abyssal-hand-404-v1.0.0-rc.5-repaired"
+  ],
+  "browser": "131.0.6778.204"
+}

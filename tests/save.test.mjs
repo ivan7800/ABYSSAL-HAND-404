@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {newRun,toggleCard,playSelection} from '../js/core/game.js';
+import {serializeRun,restoreRun,exportSave,importSaveText,saveRun,loadRun,RUN_SCHEMA_VERSION} from '../js/persistence/run-store.js';
+let passed=0;const test=(name,fn)=>Promise.resolve().then(fn).then(()=>{passed++;console.log('PASS',name);});
+await test('serializa Set y conserva seed',()=>{const s=newRun('ABYSS-SAVE-01');toggleCard(s,s.hand[0].id);const p=serializeRun(s);assert.equal(p.schemaVersion,RUN_SCHEMA_VERSION);assert.ok(Array.isArray(p.state.selectedIds));assert.equal(p.state.seed,'ABYSS-SAVE-01');});
+await test('restaura selectedIds como Set',()=>{const s=newRun('ABYSS-SAVE-02');toggleCard(s,s.hand[0].id);const r=restoreRun(serializeRun(s));assert.ok(r.selectedIds instanceof Set);assert.equal(r.selectedIds.size,1);});
+await test('restaura una run avanzada sin perder cartas',()=>{const s=newRun('ABYSS-SAVE-03');toggleCard(s,s.hand[0].id);playSelection(s);const r=restoreRun(serializeRun(s));assert.equal(r.deck.length+s.hand.length+s.discardPile.length,s.deck.length+s.hand.length+s.discardPile.length);assert.equal(r.turn,s.turn);});
+await test('rechaza schema incompatible',()=>assert.throws(()=>restoreRun({schemaVersion:99,state:{}}),/no compatible/));
+await test('rechaza seed ausente',()=>assert.throws(()=>restoreRun({schemaVersion:1,state:{}}),/Seed/));
+await test('rechaza IDs duplicados',()=>{const s=newRun('ABYSS-SAVE-04');const p=serializeRun(s);p.state.deck.push({...p.state.hand[0]});assert.throws(()=>restoreRun(p),/duplicados/);});
+await test('export/import roundtrip',()=>{const s=newRun('ABYSS-SAVE-05');const text=exportSave(s,{fragments:7});const out=importSaveText(text);assert.equal(out.state.seed,s.seed);assert.equal(out.meta.fragments,7);});
+await test('rechaza JSON inválido',()=>assert.throws(()=>importSaveText('{oops'),/JSON válido/));
+await test('rechaza formato ajeno',()=>assert.throws(()=>importSaveText('{"hello":1}'),/no reconocido/));
+await test('fallback localStorage guarda y carga',async()=>{const mem=new Map();const storage={getItem:k=>mem.get(k)??null,setItem:(k,v)=>mem.set(k,v),removeItem:k=>mem.delete(k)};const badIDB={open(){throw new Error('disabled')}};const s=newRun('ABYSS-SAVE-06');const saved=await saveRun(s,{indexedDBImpl:badIDB,storage});assert.equal(saved.ok,true);assert.equal(saved.backend,'localStorage');const loaded=await loadRun({indexedDBImpl:badIDB,storage});assert.equal(loaded.ok,true);assert.equal(loaded.state.seed,s.seed);});
+await test('rechaza palo de carta inválido',()=>{const s=newRun('ABYSS-SAVE-07');const p=serializeRun(s);p.state.hand[0].suit='script';assert.throws(()=>restoreRun(p),/palo o rango inválido/);});
+await test('rechaza ID de carta manipulado',()=>{const s=newRun('ABYSS-SAVE-08');const p=serializeRun(s);p.state.hand[0].id='evil-card';assert.throws(()=>restoreRun(p),/ID de carta inválido/);});
+console.log(`SAVE TESTS: ${passed}/12 PASS`);

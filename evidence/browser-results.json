@@ -1,0 +1,127 @@
+{
+  "browser": "131.0.6778.204",
+  "date": "2026-10-04T21:54:42.427Z",
+  "results": [
+    {
+      "name": "HTTP subruta: arranque con 8 cartas",
+      "result": "PASS"
+    },
+    {
+      "name": "Nueva expedición: cambia semilla y mano",
+      "result": "PASS"
+    },
+    {
+      "name": "Semilla escrita y repetir semilla",
+      "result": "PASS"
+    },
+    {
+      "name": "Seleccionar/deseleccionar carta por ratón",
+      "result": "PASS"
+    },
+    {
+      "name": "Teclado Space/Enter conserva foco en carta",
+      "result": "PASS"
+    },
+    {
+      "name": "Jugar mano: puntos y contador",
+      "result": "PASS"
+    },
+    {
+      "name": "Descartar: contador y reposición",
+      "result": "PASS"
+    },
+    {
+      "name": "Códice abre y cierra visualmente",
+      "result": "PASS"
+    },
+    {
+      "name": "Audio ON/OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "CRT ON/OFF",
+      "result": "PASS"
+    },
+    {
+      "name": "Exportar: descarga real JSON",
+      "result": "PASS"
+    },
+    {
+      "name": "Importar: selector real y restauración",
+      "result": "PASS"
+    },
+    {
+      "name": "Continuar autosave + recarga",
+      "result": "PASS"
+    },
+    {
+      "name": "Importación inválida preserva partida",
+      "result": "PASS"
+    },
+    {
+      "name": "Recompensa y ruta de combate",
+      "result": "PASS"
+    },
+    {
+      "name": "Ruta mercado, comprar, duplicado, salir",
+      "result": "PASS"
+    },
+    {
+      "name": "Aceptar pacto",
+      "result": "PASS"
+    },
+    {
+      "name": "Rechazar pacto y continuar",
+      "result": "PASS"
+    },
+    {
+      "name": "Evento open",
+      "result": "PASS"
+    },
+    {
+      "name": "Evento ignore",
+      "result": "PASS"
+    },
+    {
+      "name": "Cada botón de ritual consume el correcto",
+      "result": "PASS"
+    },
+    {
+      "name": "Rey Sin Rostro: jugar, guardar y recuperar",
+      "result": "PASS"
+    },
+    {
+      "name": "8 fondos decodifican + retratos de jefes",
+      "result": "PASS"
+    },
+    {
+      "name": "Victoria y nueva expedición",
+      "result": "PASS"
+    },
+    {
+      "name": "Offline: recarga y jugar con SW real",
+      "result": "PASS"
+    },
+    {
+      "name": "Móvil 390px: botones, cartas y sin desborde",
+      "result": "PASS"
+    },
+    {
+      "name": "file://: nueva, jugar, descartar y códice",
+      "result": "PASS"
+    },
+    {
+      "name": "IDB bloqueado: clic temprano no se pierde al acabar boot",
+      "result": "PASS"
+    },
+    {
+      "name": "Storage denegado: controles operativos",
+      "result": "PASS"
+    },
+    {
+      "name": "Consola y recursos: cero errores",
+      "result": "PASS"
+    }
+  ],
+  "errors": []
+}

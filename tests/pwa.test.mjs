@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {supportsServiceWorker,PWA_CACHE} from '../js/pwa/pwa.js';
+let n=0;const t=(name,fn)=>{fn();n++;console.log('PASS',name)};
+t('cache PWA coherente con SW',()=>assert.ok(fs.readFileSync(new URL('../sw.js',import.meta.url),'utf8').includes(PWA_CACHE)));
+t('detección SW positiva',()=>assert.equal(supportsServiceWorker({serviceWorker:{}}),true));
+t('detección SW negativa',()=>assert.equal(supportsServiceWorker({}),false));
+const manifest=JSON.parse(fs.readFileSync(new URL('../manifest.webmanifest',import.meta.url),'utf8'));
+t('manifest standalone',()=>assert.equal(manifest.display,'standalone'));
+t('start_url relativo',()=>assert.equal(manifest.start_url,'./'));
+t('scope relativo',()=>assert.equal(manifest.scope,'./'));
+t('dos iconos PWA',()=>assert.deepEqual(manifest.icons.map(x=>x.sizes),['192x192','512x512']));
+const sw=fs.readFileSync(new URL('../sw.js',import.meta.url),'utf8');
+t('SW limpia caches antiguas',()=>assert.match(sw,/caches\.delete/));
+t('SW precachea manifest y arte original',()=>{assert.match(sw,/manifest\.webmanifest/);for(const a of ['abyss-eye.webp','drowned-oracle.webp','star-parasite.webp','void-saint.webp','drowned-port.webp','sunken-library.webp','moonless-forest.webp','black-observatory.webp'])assert.ok(sw.includes(a),`falta ${a} en precache`);});
+t('SW tiene fallback de navegación',()=>assert.match(sw,/mode==='navigate'/));
+t('SW usa network-first',()=>assert.match(sw,/fetch\(event\.request\)/));
+console.log(`PWA TESTS: ${n}/11 PASS`);

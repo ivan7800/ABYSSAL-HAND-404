@@ -1,0 +1,102 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> abyssal-hand-404@1.0.0-rc.5 test
+> node ./tests/poker.test.mjs && node ./tests/systems.test.mjs && node ./tests/game.test.mjs && node ./tests/progression.test.mjs && node ./tests/zones.test.mjs && node ./tests/meta.test.mjs && node ./tests/save.test.mjs && node ./tests/av.test.mjs && node ./tests/pwa.test.mjs && node ./tests/hardening.test.mjs && node ./tests/buttons.test.mjs && node ./tests/art.test.mjs && node ./tests/regressions.test.mjs
+
+PASS: 12 evaluaciones de poker
+PASS: 9 comprobaciones de Locura/Entidades/Corrupción
+PASS: 20 comprobaciones del bucle de juego v0.2
+PASS: 20 comprobaciones de progresión/rutas/economía
+PASS: 25 comprobaciones de zonas/bosses/final de run
+PASS: 24 comprobaciones de seeds/metaprogresión/códice
+PASS serializa Set y conserva seed
+PASS restaura selectedIds como Set
+PASS restaura una run avanzada sin perder cartas
+PASS rechaza schema incompatible
+PASS rechaza seed ausente
+PASS rechaza IDs duplicados
+PASS export/import roundtrip
+PASS rechaza JSON inválido
+PASS rechaza formato ajeno
+PASS fallback localStorage guarda y carga
+PASS rechaza palo de carta inválido
+PASS rechaza ID de carta manipulado
+SAVE TESTS: 12/12 PASS
+PASS secuencia SID tiene 8 pasos
+PASS SFX básicos definidos
+PASS volumen limita mínimo
+PASS volumen limita máximo
+PASS volumen inválido usa fallback
+PASS settings por defecto audio OFF
+PASS settings persistibles
+PASS engine degrada sin AudioContext
+PASS startMusic degrada sin AudioContext
+AV TESTS: 9/9 PASS
+PASS cache PWA coherente con SW
+PASS detección SW positiva
+PASS detección SW negativa
+PASS manifest standalone
+PASS start_url relativo
+PASS scope relativo
+PASS dos iconos PWA
+PASS SW limpia caches antiguas
+PASS SW precachea manifest y arte original
+PASS SW tiene fallback de navegación
+PASS SW usa network-first
+PWA TESTS: 11/11 PASS
+PASS sin handlers inline
+PASS sin innerHTML inseguro
+PASS sin eval dinámico
+PASS frontend sin URLs externas
+PASS rutas de app relativas
+PASS ritual renderizado como botón
+PASS barra locura es progressbar
+PASS locura actualiza aria-valuenow
+PASS foco visible explícito
+PASS importación limitada a 2 MB
+PASS input de save restringe JSON
+PASS Service Worker limita mismo origen
+PASS entrypoint clásico portable
+HARDENING TESTS: 13/13 PASS
+PASS binding playBtn
+PASS binding discardBtn
+PASS binding newRunBtn
+PASS binding continueRunBtn
+PASS binding codexBtn
+PASS binding audioBtn
+PASS binding fxBtn
+PASS binding installBtn
+PASS binding exportSaveBtn
+PASS binding importSaveBtn
+PASS binding importSaveInput
+PASS binding nodePanel
+PASS binding powers
+PASS listeners se registran antes del boot async
+PASS file:// usa bundle clásico
+PASS seleccionar carta
+PASS JUGAR MANO
+PASS DESCARTAR
+PASS NUEVA EXPEDICIÓN
+PASS CONTINUAR AUTOSAVE
+PASS EXPORTAR / IMPORTAR SAVE
+PASS RECOGER RECOMPENSA
+PASS ELEGIR RUTA
+PASS COMPRAR EN MERCADO
+PASS ACEPTAR PACTO
+PASS EVENTO ABRIR
+PASS EVENTO IGNORAR
+PASS CONTINUAR NODO
+PASS USAR RITUAL
+PASS CÓDICE tiene listener de toggle
+PASS AUDIO cambia setting incluso sin AudioContext
+PASS CRT FX tiene listener y estado persistible
+PASS INSTALAR PWA es condicional a beforeinstallprompt
+PASS botones dinámicos usan data-action + delegación
+BUTTON/ACTION TESTS: 34 PASS
+ART TESTS: 13 assets + sector/boss integration PASS
+PASS guardar/restaurar cartas transformadas por Rey Sin Rostro
+PASS no cobrar una reliquia duplicada
+PASS acceso a localStorage denegado
+PASS ausencia de storage no declara guardado exitoso
+PASS timeout de transacción IDB con fallback
+PASS efectos consecutivos no dejan clases persistentes
