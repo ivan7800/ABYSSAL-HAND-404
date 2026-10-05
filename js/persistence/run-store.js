@@ -78,7 +78,7 @@ export function restoreRun(payload){
   state.pacts=Array.isArray(raw.pacts)?raw.pacts.map(x=>({...x})).slice(0,16):[];
   state.runStats={handsPlayed:safeNumber(raw.runStats?.handsPlayed,0,0,1e7),echoesEarned:safeNumber(raw.runStats?.echoesEarned,0,0,1e12),maxMadness:safeNumber(raw.runStats?.maxMadness,0,0,100),cardsCorrupted:safeNumber(raw.runStats?.cardsCorrupted,0,0,9999)};
   state.status=['playing','choice','lost','won'].includes(raw.status)?raw.status:'playing';
-  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
+  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','cache','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
   state.metaCommitted=Boolean(raw.metaCommitted);
   return state;
 }

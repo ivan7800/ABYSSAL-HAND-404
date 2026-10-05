@@ -78,6 +78,7 @@ export function chooseRoute(state, routeId) {
   if(node.type==='shop') return {ok:true,message:'El Mercado Sumergido abre sus postigos.'};
   if(node.type==='ritual') return {ok:true,message:'Un altar antiguo exige una decisión.'};
   if(node.type==='sanctuary') return {ok:true,message:'Encuentras un refugio bajo la marea.'};
+  if(node.type==='cache') return {ok:true,message:'Un rastro de Ecos aparece entre los restos.'};
   return {ok:true,message:'Algo llama desde detrás de una puerta sin muro.'};
 }
 export function playSelection(state) {

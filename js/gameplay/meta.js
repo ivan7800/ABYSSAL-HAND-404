@@ -68,6 +68,13 @@ export function resolveSanctuary(state,choice){
   return {ok:false,message:'Decisión de refugio desconocida.'};
 }
 
+export function resolveCache(state,choice){
+  if(state.screenMode!=='cache')return {ok:false,message:'No hay Ecos perdidos en esta senda.'};
+  if(choice==='gather'){state.echoes+=24;state.runStats.echoesEarned+=24;applyMadness(state,10);return {ok:true,message:'Reúnes 24 Ecos. Algo te sigue desde el fondo: +10 Locura.'};}
+  if(choice==='listen'){state.echoes+=10;state.runStats.echoesEarned+=10;applyMadness(state,-12);return {ok:true,message:'Escuchas antes de tocar. Recuperas 12 de Locura y encuentras 10 Ecos.'};}
+  return {ok:false,message:'No reconoces esa decisión entre los Ecos.'};
+}
+
 export function continueFromNode(state) {
   advanceEncounter(state);
   if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return {ok:false,message:'La última puerta ya está abierta.'};

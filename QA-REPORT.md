@@ -1,4 +1,13 @@
-# QA — ABYSSAL HAND 404 rc.11
+# QA — ABYSSAL HAND 404 rc.12
+
+## rc.12 — relatos y sendas
+
+- Ocho presagios ilustrados adicionales; dos relatos distintos están disponibles en cada sector.
+- Cuatro rutas en cada cruce, con opciones distintas según el sector y el encuentro; el combate y el refugio siguen disponibles.
+- Nueva ruta de Ecos con elección entre más recompensa con riesgo o menos Ecos con alivio de Locura.
+- Saves existentes conservan eventos y decisiones pendientes; se añadió prueba para guardar/restaurar una ruta de Ecos.
+- `npm test`: PASS (incluye cinco tipos de decisión, restauración de una senda de Ecos y campaña completa). `npm run build`: PASS (21 módulos).
+- Falta jugar la campaña manualmente en un teléfono/navegador real.
 
 ## rc.11 — ritmo y jugabilidad
 

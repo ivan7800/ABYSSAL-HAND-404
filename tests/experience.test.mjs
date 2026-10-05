@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { EVENTS } from '../js/economy/content.js';
+import { newRun } from '../js/core/game.js';
+import { makeRouteOptions } from '../js/gameplay/progression.js';
 const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 const render=read('../js/ui/render.js'),app=read('../js/app.js'),sw=read('../sw.js');
 const bossIds=['blind-astronomer','abyssal-mother','faceless-king','devourer','sleeper','mirror-saint','black-choir','the-gate'];
@@ -12,9 +14,13 @@ const bossMap=Object.fromEntries([...mapBody.matchAll(/'([^']+)':'([^']+)'/g)].m
 assert.deepEqual(bossIds.map(id=>bossMap[id]),bossIds,'each boss must have its own portrait');
 const eventArtBody=render.match(/const EVENT_ART=\{([^}]+)\};/)?.[1]||'';
 const eventArt=Object.fromEntries([...eventArtBody.matchAll(/'([^']+)':'([^']+)'/g)].map(([,id,file])=>[id,file]));
-assert.equal(EVENTS.length,8);
-assert.equal(new Set(EVENTS.map(event=>eventArt[event.id])).size,8,'each story must have distinct art');
+assert.equal(EVENTS.length,16);
+assert.equal(new Set(EVENTS.map(event=>eventArt[event.id])).size,16,'each story must have distinct art');
 for(const event of EVENTS)assert.ok(sceneIds.includes(eventArt[event.id]),`missing illustration for ${event.id}`);
+const offeredEvents=[];
+for(let zone=0;zone<8;zone++)for(const battleInZone of [1,3]){const state=newRun(`ART-${zone}-${battleInZone}`);state.encounter=zone*4+battleInZone;offeredEvents.push(makeRouteOptions(state).find(node=>node.type==='event')?.eventId);}
+assert.equal(new Set(offeredEvents).size,16,'every sector event slot must offer a different story');
+for(let zone=0;zone<8;zone++){const compositions=[];for(let battle=1;battle<=3;battle++){const state=newRun(`ROUTE-${zone}-${battle}`);state.encounter=zone*4+battle;compositions.push(makeRouteOptions(state).map(n=>n.type).join(','));}assert.equal(new Set(compositions).size,3,`sector ${zone+1} route choices should vary by encounter`);}
 assert.match(render,/eventArt=EVENT_ART\[story\.id\]/);
 assert.match(render,/reward:'echo-cache'/);
 assert.match(render,/BOSS_ART\[zone\.boss\.id\].*\.svg/);
@@ -25,4 +31,4 @@ assert.match(app,/else if\(a==='restart'\)startNewExpedition\(\)/);
 assert.match(app,/abyssal-quick-guide-seen-rc7/);
 assert.match(app,/updateAppBtn\.addEventListener/);
 for(const id of [...bossIds,...sceneIds])assert.ok(sw.includes(`${id}.svg`),`offline cache missing: ${id}`);
-console.log(`EXPERIENCE TESTS: ${bossIds.length} distinct bosses + ${EVENTS.length} event illustrations + ${sceneIds.length} scenes/offline PASS`);
+console.log(`EXPERIENCE TESTS: ${bossIds.length} distinct bosses + ${EVENTS.length} event illustrations + varied sector routes + ${sceneIds.length} scenes/offline PASS`);

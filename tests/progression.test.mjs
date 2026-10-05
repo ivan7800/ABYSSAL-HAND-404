@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { newRun, toggleCard, playSelection, claimReward, chooseRoute } from '../js/core/game.js';
 import { targetForEncounter, makeRouteOptions, rewardForEncounter, advanceEncounter } from '../js/gameplay/progression.js';
-import { buyItem, acceptPact, resolveEvent, resolveSanctuary, continueFromNode, useRitual } from '../js/gameplay/meta.js';
+import { buyItem, acceptPact, resolveEvent, resolveSanctuary, resolveCache, continueFromNode, useRitual } from '../js/gameplay/meta.js';
 
 const fixed=()=>0.123456;
 assert.equal(targetForEncounter(1),300);
@@ -11,6 +11,10 @@ assert.equal(targetForEncounter(32),992);
 assert.equal(targetForEncounter(3,1),743);
 let state=newRun(fixed);
 assert.equal(makeRouteOptions(state).length,4);
+for(let zone=0;zone<8;zone++){
+  for(let battleInZone=1;battleInZone<=(zone===7?3:4);battleInZone++){const run=newRun('ROUTE-CHECK');run.encounter=zone*4+battleInZone;const options=makeRouteOptions(run);assert.ok(options.some(x=>x.type==='battle'));assert.ok(options.some(x=>x.type==='sanctuary'));assert.equal(options.length,4);assert.equal(new Set(options.map(x=>x.type)).size,4);if(battleInZone===1||battleInZone===3)assert.ok(options.some(x=>x.type==='event'));}
+}
+const legacy=newRun('LEGACY-ROUTE');legacy.campaignVersion=1;legacy.encounter=1;assert.deepEqual(makeRouteOptions(legacy).map(x=>x.type),['battle','shop','event','sanctuary']);
 assert.equal(rewardForEncounter(state),11);
 state.totalScore=299;
 toggleCard(state,state.hand[0].id);
@@ -36,6 +40,7 @@ assert.equal(acceptPact(state,'blood-pact').ok,true);
 assert.equal(state.pacts[0].id,'blood-pact');
 state.screenMode='event'; state.status='choice'; state.currentNode={eventId:'silent-bell'}; const echoes=state.echoes;
 assert.equal(resolveEvent(state,'hear').ok,true); assert.ok(state.echoes>echoes); assert.ok(state.madness>=34);
+const cacheRun=newRun('CACHE');cacheRun.screenMode='cache';cacheRun.madness=20;assert.equal(resolveCache(cacheRun,'gather').ok,true);assert.equal(cacheRun.echoes,24);assert.equal(cacheRun.madness,30);assert.equal(resolveCache(cacheRun,'unknown').ok,false);
 const oldEncounter=state.encounter;
 assert.equal(continueFromNode(state).ok,true);
 assert.equal(state.encounter,oldEncounter+1);

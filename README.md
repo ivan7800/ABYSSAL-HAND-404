@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.11 RITMO DE CAMPAÑA
+# ABYSSAL HAND 404 — 1.0.0-rc.12 RELATOS Y SENDAS
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -15,6 +15,14 @@ En la primera expedición, la guía se abre automáticamente. Al cerrarla, la el
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Qué incluye rc.12
+
+- Ocho presagios adicionales con decisiones, efectos e ilustraciones propias: ahora hay dos relatos distintos por sector.
+- Cada sector cambia las cuatro rutas disponibles según el encuentro; aparece también una senda de Ecos con una elección entre riesgo y calma.
+- Cada cruce conserva una opción de combate y otra de refugio para que la variedad de rutas no quite herramientas de supervivencia.
+- Las partidas antiguas mantienen sus rutas clásicas.
+- Las ilustraciones nuevas se incluyen en el precache offline y cada decisión narrativa sigue disponible al recuperar un save.
 
 ## Qué incluye rc.11
 
@@ -66,7 +74,7 @@ El guardado depende de los permisos del navegador. Si el almacenamiento está bl
 
 ## Arte
 
-Cinco ilustraciones de sector de 1536 × 1024: Puerto Ahogado panorámico, Ciudad Imposible, Mar de Ceniza, Templo Abisal y Más Allá de la Puerta. Los ocho sectores tienen fondos distintos. Los eventos de rc.10 tienen escenas propias y la recompensa también. Los recursos se sirven localmente y están incluidos en el modo offline.
+Cinco ilustraciones de sector de 1536 × 1024: Puerto Ahogado panorámico, Ciudad Imposible, Mar de Ceniza, Templo Abisal y Más Allá de la Puerta. Los ocho sectores tienen fondos distintos. Los 16 presagios tienen escenas propias y la recompensa también. Los recursos se sirven localmente y están incluidos en el modo offline.
 
 ## Evidencia
 
@@ -85,7 +93,7 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.11 · RITMO DE CAMPAÑA`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.12 · RELATOS Y SENDAS`.
 
 ## Alcance
 

@@ -6,14 +6,34 @@ export const NODE_TYPES = {
   shop: { name: 'MERCADO', icon: '¤' },
   ritual: { name: 'RITUAL', icon: '✦' },
   event: { name: 'PRESAGIO', icon: '?', description:'Un relato del sector con una decisión de riesgo o alivio.' },
-  sanctuary: { name: 'REFUGIO', icon: '✚', description:'Recupera Locura, purifica una carta o cambia seguridad por Ecos.' }
+  sanctuary: { name: 'REFUGIO', icon: '✚', description:'Recupera Locura, purifica una carta o cambia seguridad por Ecos.' },
+  cache: { name: 'ECO PERDIDO', icon: '◈', description:'Encuentra Ecos entre los restos: puedes arriesgarte o escuchar con cautela.' }
 };
 
-const ROUTE_TABLE = [
+const LEGACY_ROUTE_TABLE = [
   ['battle','shop','event','sanctuary'],
   ['battle','ritual','shop','sanctuary'],
   ['event','battle','ritual','sanctuary'],
   ['shop','battle','event','sanctuary']
+];
+
+// Cada sector altera el equilibrio entre mercado, altar, presagio y refugio.
+// Las dos ventanas narrativas ofrecen un presagio diferente en cada sector.
+const ROUTES_BY_ZONE = [
+  [['battle','shop','event','sanctuary'],['battle','ritual','shop','sanctuary'],['event','battle','ritual','sanctuary'],['shop','battle','cache','sanctuary']],
+  [['battle','ritual','event','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','cache','sanctuary'],['ritual','battle','cache','sanctuary']],
+  [['event','battle','cache','sanctuary'],['battle','sanctuary','shop','cache'],['battle','event','ritual','sanctuary'],['sanctuary','battle','ritual','cache']],
+  [['battle','event','shop','sanctuary'],['battle','sanctuary','ritual','cache'],['event','battle','cache','sanctuary'],['ritual','shop','battle','sanctuary']],
+  [['battle','cache','event','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','shop','sanctuary'],['sanctuary','ritual','battle','cache']],
+  [['event','battle','ritual','sanctuary'],['battle','shop','cache','sanctuary'],['battle','cache','event','sanctuary'],['ritual','battle','shop','sanctuary']],
+  [['battle','shop','event','sanctuary'],['battle','ritual','cache','sanctuary'],['sanctuary','event','battle','ritual'],['shop','battle','cache','sanctuary']],
+  [['battle','event','cache','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','shop','sanctuary'],['ritual','sanctuary','battle','cache']]
+];
+const EVENTS_BY_ZONE = [
+  ['silent-bell','tide-accountant'],['living-book','tooth-catalogue'],
+  ['root-crown','hollow-stag'],['false-sun','star-eater'],
+  ['folded-street','door-cab'],['bone-tide','ember-fisher'],
+  ['choir-well','shell-pilgrim'],['breathing-gate','second-shadow']
 ];
 
 export function targetForEncounter(encounter,campaignVersion=2) {
@@ -29,9 +49,12 @@ export function targetForEncounter(encounter,campaignVersion=2) {
 
 export function makeRouteOptions(state) {
   if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return [];
-  const row = ROUTE_TABLE[(state.encounter - 1) % ROUTE_TABLE.length];
   const zone=zoneForEncounter(state.encounter,state.campaignVersion);
-  return row.map((type,index)=>({id:`${state.encounter}-${index}-${type}`,type,...NODE_TYPES[type],...(type==='event'?{eventId:EVENTS[zone.zoneIndex%EVENTS.length].id}:{})}));
+  const row=state.campaignVersion<2
+    ?LEGACY_ROUTE_TABLE[(state.encounter-1)%LEGACY_ROUTE_TABLE.length]
+    :ROUTES_BY_ZONE[zone.zoneIndex][zone.battleInZone-1];
+  const eventIndex=zone.battleInZone===3?1:0;
+  return row.map((type,index)=>({id:`${state.encounter}-${index}-${type}`,type,...NODE_TYPES[type],...(type==='event'?{eventId:state.campaignVersion<2?EVENTS[0].id:EVENTS_BY_ZONE[zone.zoneIndex][eventIndex]}:{})}));
 }
 
 export function rewardForEncounter(state) {

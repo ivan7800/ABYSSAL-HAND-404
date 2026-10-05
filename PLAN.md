@@ -1,4 +1,11 @@
-# Estado de entrega — 1.0.0-rc.11
+# Estado de entrega — 1.0.0-rc.12
+
+## rc.12 — presagios y rutas
+
+- 16 eventos ilustrados únicos; dos ranuras de evento con relato distinto por sector.
+- Ocho conjuntos sectoriales de rutas, con tres cruces distintos en cada uno y cuatro opciones por cruce.
+- Guardados anteriores conservan sus IDs de evento y sus decisiones pendientes.
+- Pendiente: probar una expedición completa manualmente en móvil y escritorio.
 
 ## rc.11 — campaña alcanzable
 

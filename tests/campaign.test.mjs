@@ -3,7 +3,7 @@ import { newRun, toggleCard, playSelection, claimReward, chooseRoute } from '../
 import { scoreSelection } from '../js/scoring/scoring.js';
 import { makeSeededRandom } from '../js/core/rng.js';
 import { EVENTS } from '../js/economy/content.js';
-import { buyItem, acceptPact, continueFromNode, resolveSanctuary, resolveEvent } from '../js/gameplay/meta.js';
+import { buyItem, acceptPact, continueFromNode, resolveSanctuary, resolveEvent, resolveCache } from '../js/gameplay/meta.js';
 
 // A deterministic, ordinary build can finish all 32 encounters without forced scores.
 const previousRandom=Math.random;
@@ -27,14 +27,15 @@ try {
         for(const card of best)assert.equal(toggleCard(state,card.id).ok,true);
         assert.equal(playSelection(state).ok,true);
       }
-      assert.notEqual(state.status,'lost',`Perdida en el encuentro ${state.encounter}`);
+      assert.notEqual(state.status,'lost',`Perdida en el encuentro ${state.encounter} con ${state.madness}% locura, ${state.handsLeft} manos y ${state.totalScore}/${state.targetScore}`);
     }
     if(state.screenMode==='reward')assert.equal(claimReward(state).ok,true);
     if(state.screenMode==='route'){
       let type='battle';
       if(state.encounter===2&&!state.relics.some(x=>x.id==='coral-heart'))type='shop';
       else if(state.encounter===3&&!state.pacts.some(x=>x.id==='blood-pact'))type='ritual';
-      else if(state.madness>=17)type='sanctuary';
+      else if(state.encounter===4&&state.routeOptions.some(x=>x.type==='cache'))type='cache';
+      else if(state.madness>=17&&state.routeOptions.some(x=>x.type==='sanctuary'))type='sanctuary';
       else if(state.routeOptions.some(x=>x.type==='event'))type='event';
       const route=state.routeOptions.find(x=>x.type===type)||state.routeOptions[0];
       assert.equal(chooseRoute(state,route.id).ok,true);
@@ -45,6 +46,7 @@ try {
       }
       if(state.screenMode==='ritual'){assert.equal(acceptPact(state,'blood-pact').ok,true);continueFromNode(state);}
       if(state.screenMode==='sanctuary'){assert.equal(resolveSanctuary(state,'rest').ok,true);continueFromNode(state);}
+      if(state.screenMode==='cache'){assert.equal(resolveCache(state,'listen').ok,true);continueFromNode(state);}
       if(state.screenMode==='event'){
         const story=EVENTS.find(x=>x.id===state.currentNode.eventId);
         assert.ok(story);
@@ -56,6 +58,6 @@ try {
   assert.equal(state.status,'won');
   assert.equal(state.encounter,32);
   assert.equal(state.bossesDefeated,8);
-  assert.ok(['shop','ritual','sanctuary','event'].every(type=>visited.has(type)));
-  console.log('PASS campaña completa: 32 encuentros, ocho jefes y cuatro tipos de decisión');
+  assert.ok(['shop','ritual','sanctuary','event','cache'].every(type=>visited.has(type)));
+  console.log('PASS campaña completa: 32 encuentros, ocho jefes y cinco tipos de decisión');
 } finally { Math.random=previousRandom; }

@@ -327,7 +327,15 @@ const EVENTS = [
   {id:'folded-street',name:'LA CALLE PLEGADA',text:'La avenida regresa a su propio comienzo. En el centro, alguien ofrece un atajo.',choices:[{id:'shortcut',label:'ATAJO · +24 ECOS · +15 LOCURA',effect:{echoes:24,madness:15}},{id:'retrace',label:'VOLVER SOBRE TUS PASOS · −10 LOCURA',effect:{madness:-10}}]},
   {id:'bone-tide',name:'LA MAREA DE HUESOS',text:'La marea deposita costillas con los nombres de quienes aún respiran.',choices:[{id:'dive',label:'SUMERGIRTE · LLAVE ROJA · +12 LOCURA',effect:{echoes:14,madness:12,ritual:'red-key'}},{id:'shore',label:'QUEDARTE EN LA ORILLA · +5 ECOS · −8 LOCURA',effect:{echoes:5,madness:-8}}]},
   {id:'choir-well',name:'EL POZO DEL CORO',text:'Desde el pozo, muchas voces pronuncian una sola plegaria: la tuya.',choices:[{id:'answer',label:'RESPONDER · CÍRCULO DE SAL · +8 LOCURA',effect:{echoes:12,madness:8,ritual:'salt-circle'}},{id:'refuse',label:'CALLAR · −12 LOCURA',effect:{madness:-12}}]},
-  {id:'breathing-gate',name:'EL ALIENTO DE LA PUERTA',text:'La puerta exhala. Detrás de ti, el mundo inhala al mismo tiempo.',choices:[{id:'cross',label:'CRUZAR · +32 ECOS · +20 LOCURA',effect:{echoes:32,madness:20}},{id:'wait',label:'ESPERAR · +10 ECOS · −8 LOCURA',effect:{echoes:10,madness:-8}}]}
+  {id:'breathing-gate',name:'EL ALIENTO DE LA PUERTA',text:'La puerta exhala. Detrás de ti, el mundo inhala al mismo tiempo.',choices:[{id:'cross',label:'CRUZAR · +32 ECOS · +20 LOCURA',effect:{echoes:32,madness:20}},{id:'wait',label:'ESPERAR · +10 ECOS · −8 LOCURA',effect:{echoes:10,madness:-8}}]},
+  {id:'tide-accountant',name:'EL CONTABLE DE LA MAREA',text:'Una figura cuenta monedas que aún no han caído del barco. Cada cifra hace subir el agua.',choices:[{id:'pay',label:'PAGAR LA DEUDA · +28 ECOS · +12 LOCURA',effect:{echoes:28,madness:12}},{id:'erase',label:'ROMPER EL LIBRO · +6 ECOS · −10 LOCURA',effect:{echoes:6,madness:-10}}]},
+  {id:'tooth-catalogue',name:'EL CATÁLOGO DE DIENTES',text:'En los estantes, cada diente lleva escrito el nombre de un libro que todavía no has leído.',choices:[{id:'borrow',label:'TOMAR PRESTADO · LLAVE ROJA · +12 LOCURA',effect:{echoes:10,madness:12,ritual:'red-key'}},{id:'return',label:'DEVOLVER UNO · +8 ECOS · −10 LOCURA',effect:{echoes:8,madness:-10}}]},
+  {id:'hollow-stag',name:'EL CIERVO HUECO',text:'Un ciervo sin sombra bebe del charco. En su reflejo tiene demasiados ojos.',choices:[{id:'follow',label:'SEGUIRLO · +26 ECOS · +14 LOCURA',effect:{echoes:26,madness:14}},{id:'scatter',label:'AHUYENTARLO · CÍRCULO DE SAL · +8 LOCURA',effect:{echoes:8,madness:8,ritual:'salt-circle'}}]},
+  {id:'star-eater',name:'EL DEVORADOR DE ESTRELLAS',text:'Una constelación se apaga punto por punto. Algo mastica detrás del vidrio.',choices:[{id:'calculate',label:'CALCULAR SU ÓRBITA · +30 ECOS · +16 LOCURA',effect:{echoes:30,madness:16}},{id:'shutter',label:'CERRAR LA CÚPULA · +10 ECOS · −8 LOCURA',effect:{echoes:10,madness:-8}}]},
+  {id:'door-cab',name:'EL TAXI DE LAS PUERTAS',text:'Un taxi vacío espera en una calle que no estaba ahí hace un segundo. El taxímetro cuenta recuerdos.',choices:[{id:'ride',label:'SUBIR · +34 ECOS · +18 LOCURA',effect:{echoes:34,madness:18}},{id:'walk',label:'SEGUIR A PIE · +12 ECOS · −8 LOCURA',effect:{echoes:12,madness:-8}}]},
+  {id:'ember-fisher',name:'EL PESCADOR DE BRASAS',text:'Desde la ceniza, alguien pesca luces con un anzuelo hecho de costilla.',choices:[{id:'take',label:'TOMAR LA BRASA · LLAVE ROJA · +12 LOCURA',effect:{echoes:16,madness:12,ritual:'red-key'}},{id:'cover',label:'APAGARLA · +7 ECOS · −10 LOCURA',effect:{echoes:7,madness:-10}}]},
+  {id:'shell-pilgrim',name:'EL PEREGRINO DE CONCHAS',text:'Una concha camina sola por el templo. Desde dentro, una multitud pide refugio.',choices:[{id:'open',label:'ABRIRLA · CÍRCULO DE SAL · +10 LOCURA',effect:{echoes:18,madness:10,ritual:'salt-circle'}},{id:'leave',label:'DEJARLA EN PAZ · +9 ECOS · −12 LOCURA',effect:{echoes:9,madness:-12}}]},
+  {id:'second-shadow',name:'LA SEGUNDA SOMBRA',text:'Tu sombra llega antes que tú y llama tres veces desde el otro lado de la puerta.',choices:[{id:'answer',label:'RESPONDER · +40 ECOS · +20 LOCURA',effect:{echoes:40,madness:20}},{id:'turn',label:'APARTAR LA MIRADA · +14 ECOS · −8 LOCURA',effect:{echoes:14,madness:-8}}]}
 ];
 
 return {SHOP_ITEMS,PACTS,EVENTS};
@@ -341,14 +349,34 @@ const NODE_TYPES = {
   shop: { name: 'MERCADO', icon: '¤' },
   ritual: { name: 'RITUAL', icon: '✦' },
   event: { name: 'PRESAGIO', icon: '?', description:'Un relato del sector con una decisión de riesgo o alivio.' },
-  sanctuary: { name: 'REFUGIO', icon: '✚', description:'Recupera Locura, purifica una carta o cambia seguridad por Ecos.' }
+  sanctuary: { name: 'REFUGIO', icon: '✚', description:'Recupera Locura, purifica una carta o cambia seguridad por Ecos.' },
+  cache: { name: 'ECO PERDIDO', icon: '◈', description:'Encuentra Ecos entre los restos: puedes arriesgarte o escuchar con cautela.' }
 };
 
-const ROUTE_TABLE = [
+const LEGACY_ROUTE_TABLE = [
   ['battle','shop','event','sanctuary'],
   ['battle','ritual','shop','sanctuary'],
   ['event','battle','ritual','sanctuary'],
   ['shop','battle','event','sanctuary']
+];
+
+// Cada sector altera el equilibrio entre mercado, altar, presagio y refugio.
+// Las dos ventanas narrativas ofrecen un presagio diferente en cada sector.
+const ROUTES_BY_ZONE = [
+  [['battle','shop','event','sanctuary'],['battle','ritual','shop','sanctuary'],['event','battle','ritual','sanctuary'],['shop','battle','cache','sanctuary']],
+  [['battle','ritual','event','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','cache','sanctuary'],['ritual','battle','cache','sanctuary']],
+  [['event','battle','cache','sanctuary'],['battle','sanctuary','shop','cache'],['battle','event','ritual','sanctuary'],['sanctuary','battle','ritual','cache']],
+  [['battle','event','shop','sanctuary'],['battle','sanctuary','ritual','cache'],['event','battle','cache','sanctuary'],['ritual','shop','battle','sanctuary']],
+  [['battle','cache','event','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','shop','sanctuary'],['sanctuary','ritual','battle','cache']],
+  [['event','battle','ritual','sanctuary'],['battle','shop','cache','sanctuary'],['battle','cache','event','sanctuary'],['ritual','battle','shop','sanctuary']],
+  [['battle','shop','event','sanctuary'],['battle','ritual','cache','sanctuary'],['sanctuary','event','battle','ritual'],['shop','battle','cache','sanctuary']],
+  [['battle','event','cache','sanctuary'],['battle','shop','ritual','sanctuary'],['event','battle','shop','sanctuary'],['ritual','sanctuary','battle','cache']]
+];
+const EVENTS_BY_ZONE = [
+  ['silent-bell','tide-accountant'],['living-book','tooth-catalogue'],
+  ['root-crown','hollow-stag'],['false-sun','star-eater'],
+  ['folded-street','door-cab'],['bone-tide','ember-fisher'],
+  ['choir-well','shell-pilgrim'],['breathing-gate','second-shadow']
 ];
 
 function targetForEncounter(encounter,campaignVersion=2) {
@@ -364,9 +392,12 @@ function targetForEncounter(encounter,campaignVersion=2) {
 
 function makeRouteOptions(state) {
   if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return [];
-  const row = ROUTE_TABLE[(state.encounter - 1) % ROUTE_TABLE.length];
   const zone=zoneForEncounter(state.encounter,state.campaignVersion);
-  return row.map((type,index)=>({id:`${state.encounter}-${index}-${type}`,type,...NODE_TYPES[type],...(type==='event'?{eventId:EVENTS[zone.zoneIndex%EVENTS.length].id}:{})}));
+  const row=state.campaignVersion<2
+    ?LEGACY_ROUTE_TABLE[(state.encounter-1)%LEGACY_ROUTE_TABLE.length]
+    :ROUTES_BY_ZONE[zone.zoneIndex][zone.battleInZone-1];
+  const eventIndex=zone.battleInZone===3?1:0;
+  return row.map((type,index)=>({id:`${state.encounter}-${index}-${type}`,type,...NODE_TYPES[type],...(type==='event'?{eventId:state.campaignVersion<2?EVENTS[0].id:EVENTS_BY_ZONE[zone.zoneIndex][eventIndex]}:{})}));
 }
 
 function rewardForEncounter(state) {
@@ -509,6 +540,7 @@ function chooseRoute(state, routeId) {
   if(node.type==='shop') return {ok:true,message:'El Mercado Sumergido abre sus postigos.'};
   if(node.type==='ritual') return {ok:true,message:'Un altar antiguo exige una decisión.'};
   if(node.type==='sanctuary') return {ok:true,message:'Encuentras un refugio bajo la marea.'};
+  if(node.type==='cache') return {ok:true,message:'Un rastro de Ecos aparece entre los restos.'};
   return {ok:true,message:'Algo llama desde detrás de una puerta sin muro.'};
 }
 function playSelection(state) {
@@ -607,6 +639,13 @@ function resolveSanctuary(state,choice){
   return {ok:false,message:'Decisión de refugio desconocida.'};
 }
 
+function resolveCache(state,choice){
+  if(state.screenMode!=='cache')return {ok:false,message:'No hay Ecos perdidos en esta senda.'};
+  if(choice==='gather'){state.echoes+=24;state.runStats.echoesEarned+=24;applyMadness(state,10);return {ok:true,message:'Reúnes 24 Ecos. Algo te sigue desde el fondo: +10 Locura.'};}
+  if(choice==='listen'){state.echoes+=10;state.runStats.echoesEarned+=10;applyMadness(state,-12);return {ok:true,message:'Escuchas antes de tocar. Recuperas 12 de Locura y encuentras 10 Ecos.'};}
+  return {ok:false,message:'No reconoces esa decisión entre los Ecos.'};
+}
+
 function continueFromNode(state) {
   advanceEncounter(state);
   if(state.encounter>=finalEncounterForVersion(state.campaignVersion))return {ok:false,message:'La última puerta ya está abierta.'};
@@ -615,7 +654,7 @@ function continueFromNode(state) {
   return {ok:true,message:`SECTOR ${zone.zoneIndex+1} · ${zone.name}. ENCUENTRO ${state.encounter}. El umbral asciende a ${state.targetScore}.${threat}`};
 }
 
-return {buyItem,useRitual,acceptPact,resolveEvent,resolveSanctuary,continueFromNode};
+return {buyItem,useRitual,acceptPact,resolveEvent,resolveSanctuary,resolveCache,continueFromNode};
 })();
 // js/meta/codex.js
 const m12=(()=>{
@@ -659,8 +698,8 @@ const RANK_MOTIFS={'2':'·✦\n✦·','3':'✦·✦\n · ','4':'✦ ✦\n✦ ✦
 const SUIT_SIGILS={spade:'✦',heart:'♥',diamond:'◉',club:'Ψ'};
 const SECTOR_ART={'drowned-port':'drowned-port-wide.png','sunken-library':'sunken-library.webp','moonless-forest':'moonless-forest.webp','black-observatory':'black-observatory.webp','impossible-city':'impossible-city.png','ash-sea':'ash-sea.png','abyssal-temple':'abyssal-temple.png','beyond-gate':'beyond-gate.png'};
 const BOSS_ART={'blind-astronomer':'blind-astronomer','abyssal-mother':'abyssal-mother','faceless-king':'faceless-king','devourer':'devourer','sleeper':'sleeper','mirror-saint':'mirror-saint','black-choir':'black-choir','the-gate':'the-gate'};
-const NODE_ART={reward:'echo-cache',route:'route-map',shop:'drowned-market',ritual:'nameless-altar',event:'wall-less-door',sanctuary:'tide-refuge',victory:'beyond-the-gate',lost:'the-last-signal'};
-const EVENT_ART={'silent-bell':'silent-bell','living-book':'living-book','root-crown':'root-crown','false-sun':'false-sun','folded-street':'folded-street','bone-tide':'bone-tide','choir-well':'choir-well','breathing-gate':'breathing-gate'};
+const NODE_ART={reward:'echo-cache',route:'route-map',shop:'drowned-market',ritual:'nameless-altar',event:'wall-less-door',sanctuary:'tide-refuge',cache:'echo-cache',victory:'beyond-the-gate',lost:'the-last-signal'};
+const EVENT_ART={'silent-bell':'silent-bell','living-book':'living-book','root-crown':'root-crown','false-sun':'false-sun','folded-street':'folded-street','bone-tide':'bone-tide','choir-well':'choir-well','breathing-gate':'breathing-gate','tide-accountant':'tide-accountant','tooth-catalogue':'tooth-catalogue','hollow-stag':'hollow-stag','star-eater':'star-eater','door-cab':'door-cab','ember-fisher':'ember-fisher','shell-pilgrim':'shell-pilgrim','second-shadow':'second-shadow'};
 const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!=null)el.textContent=text;return el;};
 function makeButton(text, action, value, cls='node-btn'){const b=make('button',cls,text);b.type='button';b.dataset.action=action;if(value)b.dataset.value=value;return b;}
 function renderCard(card,selected,onToggle){const btn=make('button',`card suit-${card.suit} corrupt-${card.corruption||0}${selected?' selected':''}`);btn.type='button';btn.dataset.cardId=card.id;btn.dataset.rank=String(card.rank);btn.setAttribute('aria-pressed',String(selected));btn.setAttribute('aria-label',`${card.rankLabel} de ${card.suitName}${card.corruption?`, corrupción ${card.corruption}`:''}`);const top=make('div','card-top');top.append(make('span','rank',card.rankLabel),make('span','suit-mini',SUIT_SIGILS[card.suit]));const motif=make('span','motif',`${SUIT_SIGILS[card.suit]}${RANK_MOTIFS[card.rankLabel]}${SUIT_SIGILS[card.suit]}`);const bottom=make('div','card-bottom');bottom.append(make('span','name',card.suitName.toUpperCase()),make('span','corruption-pips',card.corruption?'◆'.repeat(card.corruption):'···'));btn.append(top,motif,bottom);btn.addEventListener('click',()=>onToggle(card.id));return btn;}
@@ -674,6 +713,7 @@ function renderNode(state){refs.nodePanel.replaceChildren();refs.nodePanel.hidde
   if(state.screenMode==='ritual'){scene='ritual';title.textContent='ALTAR SIN NOMBRE';text.textContent='Solo un pacto puede arraigar en este altar.';for(const pact of PACTS){const card=make('div','offer');card.append(make('b','',pact.name),make('small','',pact.text),makeButton('ACEPTAR','pact',pact.id,'mini-btn'));actions.append(card);}actions.append(makeButton('RECHAZAR Y SEGUIR','continue'));}
   if(state.screenMode==='event'){scene='event';if(state.campaignVersion<2){title.textContent='LA PUERTA SIN MURO';text.textContent='Del otro lado llega el sonido de cartas barajándose bajo el agua.';actions.append(makeButton('ABRIR · +12 LOCURA','event','open'),makeButton('IGNORAR · −5 LOCURA','event','ignore'));}else{const story=EVENTS.find(e=>e.id===state.currentNode?.eventId)||EVENTS[0];eventArt=EVENT_ART[story.id];title.textContent=story.name;text.textContent=story.text;for(const choice of story.choices)actions.append(makeButton(choice.label,'event',choice.id));}}
   if(state.screenMode==='sanctuary'){scene='sanctuary';title.textContent='REFUGIO ENTRE MAREAS';text.textContent='La piedra mantiene fuera al océano durante unos minutos. Elige qué quieres recuperar.';actions.append(makeButton('DESCANSAR · −18 LOCURA','sanctuary','rest'),makeButton('PURIFICAR · −1 CORRUPCIÓN','sanctuary','purify'),makeButton('HACER UN TRATO · +20 ECOS · +8 LOCURA','sanctuary','bargain'));}
+  if(state.screenMode==='cache'){scene='cache';title.textContent='ECOS ENTRE LOS RESTOS';text.textContent='Una corriente trae monedas y susurros. Decide cuánto estás dispuesto a escuchar.';actions.append(makeButton('REUNIR · +24 ECOS · +10 LOCURA','cache','gather'),makeButton('ESCUCHAR · +10 ECOS · −12 LOCURA','cache','listen'));}
   if(state.screenMode==='victory'){scene='victory';title.textContent='LA PUERTA CEDE';title.classList.add('victory-mark');text.textContent=`Has atravesado los 8 sectores y derrotado ${state.bossesDefeated} entidades. La expedición ha terminado.`;actions.append(makeButton('NUEVA EXPEDICIÓN','restart'));}
   const art=make('img',`node-art${scene==='victory'?' victory-art':''}`);art.src=`./assets/art/scenes/${eventArt||NODE_ART[scene]||'route-map'}.svg`;art.alt='';art.setAttribute('aria-hidden','true');
   refs.nodePanel.append(title,text,art,actions);
@@ -798,7 +838,7 @@ function restoreRun(payload){
   state.pacts=Array.isArray(raw.pacts)?raw.pacts.map(x=>({...x})).slice(0,16):[];
   state.runStats={handsPlayed:safeNumber(raw.runStats?.handsPlayed,0,0,1e7),echoesEarned:safeNumber(raw.runStats?.echoesEarned,0,0,1e12),maxMadness:safeNumber(raw.runStats?.maxMadness,0,0,100),cardsCorrupted:safeNumber(raw.runStats?.cardsCorrupted,0,0,9999)};
   state.status=['playing','choice','lost','won'].includes(raw.status)?raw.status:'playing';
-  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
+  state.screenMode=['battle','reward','route','shop','ritual','event','sanctuary','cache','victory'].includes(raw.screenMode)?raw.screenMode:'battle';
   state.metaCommitted=Boolean(raw.metaCommitted);
   return state;
 }
@@ -906,7 +946,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.11-campaign-balance';
+const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.12-story-routes';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){
@@ -926,7 +966,7 @@ return {PWA_CACHE,supportsServiceWorker,isStandalone,registerPwa};
 // js/app.js
 const m20=(()=>{
 const { newRun, preview, toggleCard, playSelection, discardSelection, claimReward, chooseRoute }=m10;
-const { buyItem, acceptPact, resolveEvent, resolveSanctuary, continueFromNode, useRitual }=m11;
+const { buyItem, acceptPact, resolveEvent, resolveSanctuary, resolveCache, continueFromNode, useRitual }=m11;
 const { render, setMessage, renderMetaPanel }=m13;
 const { createSeed, normalizeSeed }=m9;
 const { loadMeta, saveMeta, commitRun, addUnlock }=m15;
@@ -1003,7 +1043,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)audio.stopM
 exportSaveBtn.addEventListener('click',()=>{const text=exportSave(state,meta);const blob=new Blob([text],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ABYSSAL-HAND-404_${state.seed}_E${state.encounter}.json`;document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);setMessage('Save exportado. Incluye expedición y metaprogresión.');});
 importSaveBtn.addEventListener('click',()=>importSaveInput.click());
 importSaveInput.addEventListener('change',async()=>{const file=importSaveInput.files?.[0];importSaveInput.value='';if(!file)return;if(file.size>2_000_000){setMessage('Importación rechazada: el save supera 2 MB.');return;}try{const text=await file.text();const imported=importSaveText(text);revision++;state=imported.state;if(imported.meta){saveMeta(imported.meta);meta=loadMeta();}seedInput.value='';void persistRun();setMessage(`Save importado · encuentro ${state.encounter} · seed ${state.seed}.`);refresh({autosave:false});}catch(error){setSaveStatus('IMPORT: ERROR','error');setMessage(`No se pudo importar: ${error.message}`);}});
-nodePanel.addEventListener('click',event=>{const b=event.target.closest('button[data-action]');if(!b)return;const a=b.dataset.action,v=b.dataset.value;if(a==='claim')applyResult(claimReward(state),{sound:'reward',fx:'reward'});else if(a==='route')applyResult(chooseRoute(state,v),{sound:'node',fx:'transition'});else if(a==='buy')applyResult(buyItem(state,v),{sound:'reward',fx:'reward'});else if(a==='pact'){const r=acceptPact(state,v);if(r.ok){addUnlock(meta,`pact:${v}`);saveMeta(meta);continueFromNode(state);if(v==='void-pact')state.madness=Math.min(100,state.madness+8);}applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='event'){const r=resolveEvent(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'danger',fx:'danger'});}else if(a==='sanctuary'){const r=resolveSanctuary(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='continue')applyResult(continueFromNode(state),{sound:'node',fx:'transition'});else if(a==='restart')startNewExpedition();});
+nodePanel.addEventListener('click',event=>{const b=event.target.closest('button[data-action]');if(!b)return;const a=b.dataset.action,v=b.dataset.value;if(a==='claim')applyResult(claimReward(state),{sound:'reward',fx:'reward'});else if(a==='route')applyResult(chooseRoute(state,v),{sound:'node',fx:'transition'});else if(a==='buy')applyResult(buyItem(state,v),{sound:'reward',fx:'reward'});else if(a==='pact'){const r=acceptPact(state,v);if(r.ok){addUnlock(meta,`pact:${v}`);saveMeta(meta);continueFromNode(state);if(v==='void-pact')state.madness=Math.min(100,state.madness+8);}applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='event'){const r=resolveEvent(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'danger',fx:'danger'});}else if(a==='sanctuary'){const r=resolveSanctuary(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'ritual',fx:'reward'});}else if(a==='cache'){const r=resolveCache(state,v);if(r.ok)continueFromNode(state);applyResult(r,{sound:'reward',fx:'reward'});}else if(a==='continue')applyResult(continueFromNode(state),{sound:'node',fx:'transition'});else if(a==='restart')startNewExpedition();});
 powers.addEventListener('click',event=>{const chip=event.target.closest('.power-chip.ritual');if(!chip)return;const ritual=state.rituals.find(r=>r.id===chip.dataset.ritualId);if(ritual)applyResult(useRitual(state,ritual.id),{sound:'ritual',fx:'reward'});});
 
 setFxMode(audio.settings.fx);audioBtn.textContent=`AUDIO: ${audio.settings.audio?'ON':'OFF'}`;audioBtn.setAttribute('aria-pressed',String(audio.settings.audio));fxBtn.textContent=`CRT FX: ${audio.settings.fx?'ON':'OFF'}`;fxBtn.setAttribute('aria-pressed',String(audio.settings.fx));if(audio.settings.audio)void audio.startMusic();

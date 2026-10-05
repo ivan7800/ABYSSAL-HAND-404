@@ -1,5 +1,11 @@
 # Arte de ABYSSAL HAND 404
 
+## Escenas rc.12
+
+- Ocho ilustraciones nuevas: contable de la marea, catálogo de dientes, ciervo hueco, devorador de estrellas, taxi de las puertas, pescador de brasas, peregrino de conchas y segunda sombra.
+- Cada imagen acompaña un presagio nuevo, con siluetas, paleta y motivo propios dentro del marco abisal de la campaña.
+- Las ocho escenas se sirven localmente y se precargan para el juego sin conexión.
+
 ## Escenas rc.10
 
 - Ocho SVG originales identifican los presagios: campana, libro, corona, sol, calle, marea, pozo y puerta.

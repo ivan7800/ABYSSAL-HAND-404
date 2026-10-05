@@ -1,5 +1,11 @@
 # Historial
 
+## 1.0.0-rc.12 — RELATOS Y SENDAS
+
+- Ocho presagios e ilustraciones nuevas; dos encuentros narrativos distintos por sector.
+- Las rutas cambian en cada sector y en cada cruce, manteniendo el encuentro de combate como una opción clara.
+- Precache PWA actualizado para cargar las escenas nuevas sin conexión.
+
 ## 1.0.0-rc.11 — RITMO DE CAMPAÑA
 
 - La curva de objetivos de la campaña de 32 encuentros se hizo alcanzable mediante juego normal; el jefe final pasa de 5636 a 992 Ecos.
