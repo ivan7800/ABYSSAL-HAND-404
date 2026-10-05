@@ -946,7 +946,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.12-story-routes';
+const PWA_CACHE='abyssal-hand-404-v1.0.0-release';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){

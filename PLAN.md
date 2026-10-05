@@ -1,4 +1,12 @@
-# Estado de entrega — 1.0.0-rc.12
+# Estado de entrega — 1.0.0
+
+## 1.0.0 — publicado
+
+- [x] Congelar versión, textos visibles y caché PWA en `1.0.0`.
+- [x] Mejorar la legibilidad de etiquetas, estados, decisiones y controles compactos.
+- [x] Pasar suite automatizada y recorrido simulado de 32 encuentros.
+- [ ] Validar clics en navegador aislado, Safari/iPhone e instalación nativa; bloqueado en el entorno actual.
+- [ ] Jugar una campaña completa manualmente para revisar ritmo y dificultad percibida.
 
 ## rc.12 — presagios y rutas
 
@@ -68,4 +76,4 @@
 - [ ] Instalación mediante diálogo nativo del sistema operativo.
 - [ ] Recorrido manual completo de campaña para validar equilibrio.
 
-Estado: RC reparada con evidencia de navegador. No se declara perfección ni certificación universal.
+Estado: 1.0.0 publicado. Safari/iOS y una campaña manual completa quedan fuera de la validación disponible.

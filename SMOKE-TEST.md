@@ -9,4 +9,4 @@ La batería ejecutada y los resultados están en `QA-REPORT.md` y `evidence/`.
 5. Códice abre/cierra. Audio y CRT alternan.
 6. Exportar descarga JSON. Importar lo recupera. Continuar recupera el autosave.
 7. En HTTP/HTTPS, tras el primer arranque, prueba offline: recarga y juega.
-8. Para cerrar la RC en otras plataformas, repetir en Safari/iOS y probar instalación nativa.
+8. Validación pendiente en Safari/iOS y diálogo de instalación nativa; estas plataformas no están certificadas todavía.

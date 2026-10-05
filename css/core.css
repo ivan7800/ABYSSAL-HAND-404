@@ -97,6 +97,11 @@ button:focus-visible,.card:focus-visible,.node-btn:focus-visible,.mini-btn:focus
 .threat-banner{pointer-events:none}
 @media(max-width:520px){.seed-panel{grid-template-columns:minmax(0,1fr)}.seed-panel>*{min-width:0}.controls .btn{flex:1 1 45%;min-width:0;font-size:.7rem;padding:10px 6px}.table{min-height:380px}.topbar{gap:12px}.card{background-color:var(--card-dark)}}
 
+/* 1.0.0 · legibilidad de etiquetas, estados y decisiones */
+.hud span,.omen-panel span,.power-chip small,.seed-panel label,.pwa-status,.save-status,.status-line,footer,.eyebrow,.label,.sector-subtitle,.threat-banner,.name,.corruption-pips,.offer small,.offer b,.mini-btn,.btn.compact,.meta-stat span,.codex-entry small,.codex-entry p{font-size:.75rem}
+.play-help,.node-copy,.guide-content{font-size:.875rem}
+@media(max-width:600px){.guide-content{font-size:.8125rem}}
+
 .seed-panel{margin-top:14px}
 @media(max-width:800px){.seed-hud{display:block!important;font-size:.66rem!important}}
 

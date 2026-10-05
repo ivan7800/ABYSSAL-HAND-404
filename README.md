@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.12 RELATOS Y SENDAS
+# ABYSSAL HAND 404 — 1.0.0 · RELATOS Y SENDAS
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -16,13 +16,15 @@ También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario so
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
 
-## Qué incluye rc.12
+## Versión 1.0.0
 
-- Ocho presagios adicionales con decisiones, efectos e ilustraciones propias: ahora hay dos relatos distintos por sector.
+- Campaña completa de 32 encuentros y ocho jefes, con objetivos ajustados para que el final sea alcanzable.
+- Dieciséis presagios ilustrados: dos relatos distintos por sector.
 - Cada sector cambia las cuatro rutas disponibles según el encuentro; aparece también una senda de Ecos con una elección entre riesgo y calma.
 - Cada cruce conserva una opción de combate y otra de refugio para que la variedad de rutas no quite herramientas de supervivencia.
 - Las partidas antiguas mantienen sus rutas clásicas.
-- Las ilustraciones nuevas se incluyen en el precache offline y cada decisión narrativa sigue disponible al recuperar un save.
+- Guardado automático, exportación e importación de expediciones; instalación PWA y caché offline en navegadores compatibles.
+- Los recursos son locales; las dieciséis ilustraciones de eventos se incluyen en el precache.
 
 ## Qué incluye rc.11
 
@@ -93,8 +95,8 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.12 · RELATOS Y SENDAS`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0 · LANZAMIENTO`.
 
 ## Alcance
 
-Sigue siendo una RC: se ha verificado el funcionamiento descrito en Chromium, pero no se ha certificado Safari/iPhone ni el diálogo nativo de instalación PWA. La campaña ampliada tiene una prueba completa y una simulación de 100 expediciones; todavía falta recorrerla manualmente para juzgar su ritmo y probar Safari/iPhone.
+La versión 1.0.0 pasa las pruebas automatizadas y una simulación completa de campaña. La prueba visual con clics no pudo arrancar en el entorno de publicación porque este bloquea el servidor local; Safari/iPhone, el diálogo nativo de instalación y una campaña manual quedan pendientes de validación.

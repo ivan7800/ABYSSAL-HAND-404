@@ -1,4 +1,12 @@
-# QA — ABYSSAL HAND 404 rc.12
+# QA — ABYSSAL HAND 404 1.0.0
+
+## 1.0.0 — lanzamiento
+
+- Compilación local y suite `npm test` pasan antes de publicar.
+- Recorrido determinista simulado: 32 encuentros, ocho jefes y cinco decisiones de nodo más combate.
+- 24 SVG de escena válidos; eventos y rutas comprobados en la suite automatizada.
+- La prueba interactiva de navegador no se pudo ejecutar: el entorno bloquea el servidor local con `listen EPERM`.
+- Safari/iPhone, instalación PWA nativa y recorrido manual completo siguen sin validación.
 
 ## rc.12 — relatos y sendas
 

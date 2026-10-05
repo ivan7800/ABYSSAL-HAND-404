@@ -1,5 +1,12 @@
 # Historial
 
+## 1.0.0 — LANZAMIENTO
+
+- Primera versión estable de la campaña de 32 encuentros, ocho jefes y 16 presagios ilustrados.
+- Incluye la senda de Ecos, rutas variables por sector, guardado portable y caché PWA versionada.
+- Mejora el tamaño mínimo de etiquetas, botones, estados y descripciones para facilitar la lectura.
+- Las pruebas automatizadas y la simulación de campaña pasan; Safari/iOS y la campaña manual siguen pendientes de prueba.
+
 ## 1.0.0-rc.12 — RELATOS Y SENDAS
 
 - Ocho presagios e ilustraciones nuevas; dos encuentros narrativos distintos por sector.
