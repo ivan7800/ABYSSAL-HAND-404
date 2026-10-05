@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0 · RELATOS Y SENDAS
+# ABYSSAL HAND 404 — 1.0.1 · SINERGIAS ABISALES
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -15,6 +15,12 @@ En la primera expedición, la guía se abre automáticamente. Al cerrarla, la el
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Versión 1.0.1
+
+- Dos reliquias estratégicas: Lente de Nácar refuerza escaleras y colores; Anzuelo de Marfil potencia parejas y mejores manos a cambio de Locura.
+- Hilo Negro ahora anula realmente el primer punto de Locura por corrupción de cada encuentro.
+- La vista previa y el mensaje tras jugar indican qué reliquia modificó la mano.
 
 ## Versión 1.0.0
 
@@ -95,8 +101,8 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0 · LANZAMIENTO`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.1 · MEJORAS`.
 
 ## Alcance
 
-La versión 1.0.0 pasa las pruebas automatizadas y una simulación completa de campaña. La prueba visual con clics no pudo arrancar en el entorno de publicación porque este bloquea el servidor local; Safari/iPhone, el diálogo nativo de instalación y una campaña manual quedan pendientes de validación.
+La versión 1.0.1 pasa las pruebas automatizadas y una simulación completa de campaña. La prueba visual con clics no pudo arrancar en el entorno de publicación porque este bloquea el servidor local; Safari/iPhone, el diálogo nativo de instalación y una campaña manual quedan pendientes de validación.

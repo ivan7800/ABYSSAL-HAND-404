@@ -58,6 +58,7 @@ export function restoreRun(payload){
   state.discardsLeft=safeNumber(raw.discardsLeft,5,0,99);
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
+  state.blackThreadUsed=raw.blackThreadUsed===true;
   state.encounter=safeNumber(raw.encounter,1,1,32);
   if(state.campaignVersion>=2&&state.version<9){
     state.targetScore=targetForEncounter(state.encounter,state.campaignVersion);

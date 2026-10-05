@@ -68,6 +68,7 @@ export function rewardForEncounter(state) {
 export function advanceEncounter(state) {
   state.encounter += 1;
   state.totalScore = 0;
+  state.blackThreadUsed = false;
   state.targetScore = targetForEncounter(state.encounter,state.campaignVersion);
   state.handsLeft = 4 + (state.relics.some(r=>r.id==='coral-heart')?1:0);
   state.discardsLeft = 4 + state.relics.filter(r => ['salt-lamp','ink-compass'].includes(r.id)).length + (state.pacts.some(p=>p.id==='root-pact')?1:0);

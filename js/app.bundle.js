@@ -64,6 +64,7 @@ function createInitialState() {
     lastResult: null,
     madness: 0,
     turn: 0,
+    blackThreadUsed: false,
     encounter: 1,
     bossesDefeated: 0,
     echoes: 0,
@@ -285,16 +286,27 @@ function scoreSelection(cards, state = null) {
   if (!baseResult) return null;
   const corruption = corruptionBonus(cards, state?.pacts || []);
   const entity = entityBonus(cards, state?.entities || [], state?.pacts || []);
-  const base = baseResult.base + corruption.baseBonus;
-  const mult = baseResult.mult + entity.multBonus;
+  const relics=state?.relics||[];
+  const hasRelic=id=>relics.some(relic=>relic.id===id);
+  const lensBonus=hasRelic('pearl-lens')&&['straight','flush','straight_flush'].includes(baseResult.key)?18:0;
+  const hookBonus=hasRelic('ivory-hook')&&baseResult.key!=='high_card';
+  const threadShield=hasRelic('black-thread')&&!state?.blackThreadUsed&&corruption.madnessCost>0?1:0;
+  const base = baseResult.base + corruption.baseBonus + lensBonus;
+  const mult = baseResult.mult + entity.multBonus + (hookBonus?1:0);
+  const relicLabels=[];
+  if(lensBonus)relicLabels.push('Lente de Nácar: +18 base');
+  if(hookBonus)relicLabels.push('Anzuelo de Marfil: +1 Resonancia');
+  if(threadShield)relicLabels.push('Hilo Negro: −1 Locura por corrupción');
   const result={
     ...baseResult,
     base,
     mult,
     score: base * mult,
     corruption: corruption.corruption,
-    madnessCost: corruption.madnessCost + entity.madnessCost,
-    entityLabel: entity.label
+    madnessCost: Math.max(0,corruption.madnessCost-threadShield) + entity.madnessCost + (hookBonus?2:0),
+    entityLabel: entity.label,
+    relicLabels,
+    threadShield
   };
   return state?bossScoreModifier(cards,result,state):result;
 }
@@ -309,6 +321,8 @@ const SHOP_ITEMS = [
   { id:'coral-heart', type:'relic', name:'CORAZÓN DE CORAL', cost:22, text:'+1 mano en cada encuentro.' },
   { id:'ink-compass', type:'relic', name:'BRÚJULA DE TINTA', cost:20, text:'+1 descarte en cada encuentro.' },
   { id:'waking-seal', type:'relic', name:'SELLO DEL DESPERTAR', cost:26, text:'Reduce 6 de Locura al vencer un élite o jefe.' },
+  { id:'pearl-lens', type:'relic', name:'LENTE DE NÁCAR', cost:22, text:'+18 base al formar Escalera o Color.' },
+  { id:'ivory-hook', type:'relic', name:'ANZUELO DE MARFIL', cost:24, text:'Pareja o mejor: +1 Resonancia y +2 Locura.' },
   { id:'salt-circle', type:'ritual', name:'CÍRCULO DE SAL', cost:9, text:'Reduce 18 de Locura.' },
   { id:'red-key', type:'ritual', name:'LLAVE ROJA', cost:11, text:'Corrompe una carta dos niveles.' }
 ];
@@ -411,6 +425,7 @@ function rewardForEncounter(state) {
 function advanceEncounter(state) {
   state.encounter += 1;
   state.totalScore = 0;
+  state.blackThreadUsed = false;
   state.targetScore = targetForEncounter(state.encounter,state.campaignVersion);
   state.handsLeft = 4 + (state.relics.some(r=>r.id==='coral-heart')?1:0);
   state.discardsLeft = 4 + state.relics.filter(r => ['salt-lamp','ink-compass'].includes(r.id)).length + (state.pacts.some(p=>p.id==='root-pact')?1:0);
@@ -548,6 +563,7 @@ function playSelection(state) {
   const result=preview(state);
   if(!result||state.handsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No hay una mano válida seleccionada.'};
   state.totalScore+=result.score; state.handsLeft-=1; state.turn+=1; state.runStats.handsPlayed+=1;
+  if(result.threadShield)state.blackThreadUsed=true;
   const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   applyMadness(state,result.madnessCost+(zone.isElite?1:0)); state.runStats.maxMadness=Math.max(state.runStats.maxMadness,state.madness); state.lastResult=result;
   const removed=removeSelected(state);
@@ -555,7 +571,8 @@ function playSelection(state) {
   let corruptionMessage='';
   if(state.turn%2===0){const corrupted=corruptCard(state);if(corrupted){state.runStats.cardsCorrupted+=1;corruptionMessage=` · ${corrupted.rankLabel} de ${corrupted.suitName} ha sido marcada.`;}}
   const endMessage=resolveEnd(state); const tier=madnessTier(state.madness); const entityText=result.entityLabel?` · ${result.entityLabel}.`:''; const bossText=result.bossLabel?` · ${result.bossLabel}.`:''; const aftermath=bossEffect?` · ${bossEffect}`:'';
-  return {ok:true,result,message:endMessage??`${result.name}: ${result.base} Ecos × ${result.mult} Resonancia = ${result.score}.${entityText}${bossText} Locura ${state.madness}% [${tier}]${corruptionMessage}${aftermath}`};
+  const relicText=result.relicLabels.length?` · ${result.relicLabels.join(' · ')}`:'';
+  return {ok:true,result,message:endMessage??`${result.name}: ${result.base} Ecos × ${result.mult} Resonancia = ${result.score}.${entityText}${relicText}${bossText} Locura ${state.madness}% [${tier}]${corruptionMessage}${aftermath}`};
 }
 function discardSelection(state) {
   if(state.selectedIds.size===0||state.discardsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No puedes descartar ahora.'};
@@ -704,7 +721,7 @@ const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.class
 function makeButton(text, action, value, cls='node-btn'){const b=make('button',cls,text);b.type='button';b.dataset.action=action;if(value)b.dataset.value=value;return b;}
 function renderCard(card,selected,onToggle){const btn=make('button',`card suit-${card.suit} corrupt-${card.corruption||0}${selected?' selected':''}`);btn.type='button';btn.dataset.cardId=card.id;btn.dataset.rank=String(card.rank);btn.setAttribute('aria-pressed',String(selected));btn.setAttribute('aria-label',`${card.rankLabel} de ${card.suitName}${card.corruption?`, corrupción ${card.corruption}`:''}`);const top=make('div','card-top');top.append(make('span','rank',card.rankLabel),make('span','suit-mini',SUIT_SIGILS[card.suit]));const motif=make('span','motif',`${SUIT_SIGILS[card.suit]}${RANK_MOTIFS[card.rankLabel]}${SUIT_SIGILS[card.suit]}`);const bottom=make('div','card-bottom');bottom.append(make('span','name',card.suitName.toUpperCase()),make('span','corruption-pips',card.corruption?'◆'.repeat(card.corruption):'···'));btn.append(top,motif,bottom);btn.addEventListener('click',()=>onToggle(card.id));return btn;}
 function powerChip(kind,icon,title,text){const interactive=kind==='ritual';const a=make(interactive?'button':'article',`power-chip ${kind}`);if(interactive){a.type='button';a.setAttribute('aria-label',`Usar ritual: ${title}. ${text}`);}a.append(make('span','power-icon',icon));const d=make('div');d.append(make('b','',title),make('small','',text));a.append(d);return a;}
-function renderPowers(state){refs.powers.replaceChildren();refs.powers.append(powerChip('entity','◉','EL OJO QUE NO DUERME','3+ Ojos: +1 Resonancia · cada mano +1 Locura'));const relicText={'salt-lamp':'+1 descarte por encuentro.','bone-die':'+12 Ecos al superar un encuentro.','coral-heart':'+1 mano por encuentro.','ink-compass':'+1 descarte por encuentro.','waking-seal':'−6 Locura al vencer élites y jefes.'};for(const relic of state.relics)refs.powers.append(powerChip('relic','✦',relic.name,relicText[relic.id]||'Objeto persistente de la expedición.'));for(const pact of state.pacts)refs.powers.append(powerChip('pact','⚠',pact.name,'Poder alto a cambio de una consecuencia.'));for(const ritual of state.rituals){const chip=powerChip('ritual','✧',ritual.name,'Ritual consumible disponible.');chip.dataset.ritualId=ritual.id;refs.powers.append(chip);}}
+function renderPowers(state){refs.powers.replaceChildren();refs.powers.append(powerChip('entity','◉','EL OJO QUE NO DUERME','3+ Ojos: +1 Resonancia · cada mano +1 Locura'));const relicText={'salt-lamp':'+1 descarte por encuentro.','bone-die':'+12 Ecos al superar un encuentro.','coral-heart':'+1 mano por encuentro.','ink-compass':'+1 descarte por encuentro.','waking-seal':'−6 Locura al vencer élites y jefes.','black-thread':'La primera Locura por corrupción de cada encuentro se anula.','pearl-lens':'+18 base al formar Escalera o Color.','ivory-hook':'Pareja o mejor: +1 Resonancia y +2 Locura.'};for(const relic of state.relics)refs.powers.append(powerChip('relic','✦',relic.name,relicText[relic.id]||'Objeto persistente de la expedición.'));for(const pact of state.pacts)refs.powers.append(powerChip('pact','⚠',pact.name,'Poder alto a cambio de una consecuencia.'));for(const ritual of state.rituals){const chip=powerChip('ritual','✧',ritual.name,'Ritual consumible disponible.');chip.dataset.ritualId=ritual.id;refs.powers.append(chip);}}
 function renderNode(state){refs.nodePanel.replaceChildren();refs.nodePanel.hidden=state.screenMode==='battle'&&state.status!=='lost';if(refs.nodePanel.hidden)return;const title=make('h2','node-title','');const text=make('p','node-copy','');const actions=make('div','node-actions');let scene=state.status==='lost'?'lost':state.screenMode;let eventArt=null;
   if(state.status==='lost'){title.textContent='LA EXPEDICIÓN SE HUNDE';title.classList.add('defeat-mark');text.textContent='La Locura ha devorado la última mano. Los Ecos que reuniste quedan en el Códice.';actions.append(makeButton('INTENTAR DE NUEVO','restart'));}
   if(state.screenMode==='reward'){title.textContent='UMBRAL SUPERADO';text.textContent=`La oscuridad ofrece ${state.pendingReward} Ecos antes de mostrar la siguiente senda.`;actions.append(makeButton(`RECOGER ${state.pendingReward} ECOS`,'claim'));}
@@ -818,6 +835,7 @@ function restoreRun(payload){
   state.discardsLeft=safeNumber(raw.discardsLeft,5,0,99);
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
+  state.blackThreadUsed=raw.blackThreadUsed===true;
   state.encounter=safeNumber(raw.encounter,1,1,32);
   if(state.campaignVersion>=2&&state.version<9){
     state.targetScore=targetForEncounter(state.encounter,state.campaignVersion);
@@ -946,7 +964,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-release';
+const PWA_CACHE='abyssal-hand-404-v1.0.1-release';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){

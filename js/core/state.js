@@ -16,6 +16,7 @@ export function createInitialState() {
     lastResult: null,
     madness: 0,
     turn: 0,
+    blackThreadUsed: false,
     encounter: 1,
     bossesDefeated: 0,
     echoes: 0,

@@ -1,4 +1,11 @@
-# QA — ABYSSAL HAND 404 1.0.0
+# QA — ABYSSAL HAND 404 1.0.1
+
+## 1.0.1 — verificación de sinergias
+
+- `npm run build` correcto; bundle clásico regenerado.
+- `npm test` correcto; incluye cobertura nueva de Lente de Nácar, Anzuelo de Marfil y activación/restablecimiento de Hilo Negro.
+- Campaña determinista completa de 32 encuentros y ocho jefes pasa.
+- La revisión manual exhaustiva en Safari/iPhone sigue pendiente.
 
 ## 1.0.0 — lanzamiento
 

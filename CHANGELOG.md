@@ -1,3 +1,9 @@
+## 1.0.1 — SINERGIAS ABISALES
+
+- Añade Lente de Nácar (bonifica escaleras y colores) y Anzuelo de Marfil (aumenta la Resonancia de parejas o mejores manos con coste de Locura).
+- Conecta Hilo Negro: anula el primer punto de Locura por corrupción en cada encuentro.
+- Previsión, mensajes, guardado entre encuentros y caché PWA actualizados.
+
 # Historial
 
 ## 1.0.0 — LANZAMIENTO

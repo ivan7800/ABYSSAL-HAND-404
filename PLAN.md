@@ -1,4 +1,12 @@
-# Estado de entrega — 1.0.0
+# Estado de entrega — 1.0.1
+
+## 1.0.1 — mejoras de estrategia
+
+- [x] Añadir dos reliquias con bonificaciones de puntuación distintas y contrapartida de Locura.
+- [x] Reparar la protección de Hilo Negro por encuentro y persistir su estado en guardados.
+- [x] Verificar bundle, campaña completa y suite de regresiones.
+- [ ] Pasada manual completa en Safari/iPhone.
+
 
 ## 1.0.0 — publicado
 

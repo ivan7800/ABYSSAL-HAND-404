@@ -86,6 +86,7 @@ export function playSelection(state) {
   const result=preview(state);
   if(!result||state.handsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No hay una mano válida seleccionada.'};
   state.totalScore+=result.score; state.handsLeft-=1; state.turn+=1; state.runStats.handsPlayed+=1;
+  if(result.threadShield)state.blackThreadUsed=true;
   const zone=zoneForEncounter(state.encounter,state.campaignVersion);
   applyMadness(state,result.madnessCost+(zone.isElite?1:0)); state.runStats.maxMadness=Math.max(state.runStats.maxMadness,state.madness); state.lastResult=result;
   const removed=removeSelected(state);
@@ -93,7 +94,8 @@ export function playSelection(state) {
   let corruptionMessage='';
   if(state.turn%2===0){const corrupted=corruptCard(state);if(corrupted){state.runStats.cardsCorrupted+=1;corruptionMessage=` · ${corrupted.rankLabel} de ${corrupted.suitName} ha sido marcada.`;}}
   const endMessage=resolveEnd(state); const tier=madnessTier(state.madness); const entityText=result.entityLabel?` · ${result.entityLabel}.`:''; const bossText=result.bossLabel?` · ${result.bossLabel}.`:''; const aftermath=bossEffect?` · ${bossEffect}`:'';
-  return {ok:true,result,message:endMessage??`${result.name}: ${result.base} Ecos × ${result.mult} Resonancia = ${result.score}.${entityText}${bossText} Locura ${state.madness}% [${tier}]${corruptionMessage}${aftermath}`};
+  const relicText=result.relicLabels.length?` · ${result.relicLabels.join(' · ')}`:'';
+  return {ok:true,result,message:endMessage??`${result.name}: ${result.base} Ecos × ${result.mult} Resonancia = ${result.score}.${entityText}${relicText}${bossText} Locura ${state.madness}% [${tier}]${corruptionMessage}${aftermath}`};
 }
 export function discardSelection(state) {
   if(state.selectedIds.size===0||state.discardsLeft<=0||state.status!=='playing'||state.screenMode!=='battle') return {ok:false,message:'No puedes descartar ahora.'};

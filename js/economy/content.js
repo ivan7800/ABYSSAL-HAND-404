@@ -4,6 +4,8 @@ export const SHOP_ITEMS = [
   { id:'coral-heart', type:'relic', name:'CORAZÓN DE CORAL', cost:22, text:'+1 mano en cada encuentro.' },
   { id:'ink-compass', type:'relic', name:'BRÚJULA DE TINTA', cost:20, text:'+1 descarte en cada encuentro.' },
   { id:'waking-seal', type:'relic', name:'SELLO DEL DESPERTAR', cost:26, text:'Reduce 6 de Locura al vencer un élite o jefe.' },
+  { id:'pearl-lens', type:'relic', name:'LENTE DE NÁCAR', cost:22, text:'+18 base al formar Escalera o Color.' },
+  { id:'ivory-hook', type:'relic', name:'ANZUELO DE MARFIL', cost:24, text:'Pareja o mejor: +1 Resonancia y +2 Locura.' },
   { id:'salt-circle', type:'ritual', name:'CÍRCULO DE SAL', cost:9, text:'Reduce 18 de Locura.' },
   { id:'red-key', type:'ritual', name:'LLAVE ROJA', cost:11, text:'Corrompe una carta dos niveles.' }
 ];
