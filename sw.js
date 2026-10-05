@@ -1,7 +1,7 @@
-const CACHE='abyssal-hand-404-v1.0.0-rc.10-event-art';
+const CACHE='abyssal-hand-404-v1.0.0-rc.11-campaign-balance';
 const CORE=[
-  './','./index.html','./css/core.css?v=1.0.0-rc.10','./css/core.css','./manifest.webmanifest',
-  './js/app.bundle.js?v=1.0.0-rc.10','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
+  './','./index.html','./css/core.css?v=1.0.0-rc.11','./css/core.css','./manifest.webmanifest',
+  './js/app.bundle.js?v=1.0.0-rc.11','./js/app.bundle.js','./js/persistence/storage.js','./js/app.js','./js/systems.js','./js/cards/deck.js','./js/cards/poker.js',
   './js/core/game.js','./js/core/rng.js','./js/core/state.js','./js/economy/content.js',
   './js/gameplay/bosses.js','./js/gameplay/meta.js','./js/gameplay/progression.js','./js/gameplay/zones.js',
   './js/meta/codex.js','./js/persistence/meta-store.js','./js/persistence/run-store.js',

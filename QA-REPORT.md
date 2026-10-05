@@ -1,4 +1,13 @@
-# QA — ABYSSAL HAND 404 rc.10
+# QA — ABYSSAL HAND 404 rc.11
+
+## rc.11 — ritmo y jugabilidad
+
+- La curva anterior pedía 5636 Ecos en el jefe final; en una muestra de 40 partidas reforzadas con pacto y una mano extra, ninguna superó ese objetivo.
+- La curva nueva pide 992 en el jefe final. Una ruta determinista con manos y decisiones normales completó los 32 encuentros y venció a los ocho jefes.
+- En 100 simulaciones con estrategia simple y aleatoriedad repetible, 18 llegaron a la victoria. Es una señal de viabilidad, no una tasa de victoria humana.
+- La migración de saves recalcula objetivos de la campaña extendida anterior y conserva objetivos de la campaña de 24 encuentros.
+- `npm test`: PASS (incluye recorrido completo y migración de saves). `npm run build`: PASS (21 módulos).
+- Falta un recorrido manual completo y prueba en Safari/iPhone; la ejecución local de Playwright no pudo abrir su servidor en este entorno.
 
 ## rc.10 — escenas de presagio
 

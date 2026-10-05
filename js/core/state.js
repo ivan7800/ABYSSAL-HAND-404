@@ -1,6 +1,6 @@
 export function createInitialState() {
   return {
-    version: 8,
+    version: 9,
     campaignVersion: 2,
     seed: '',
     targetScore: 300,

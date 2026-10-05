@@ -1,5 +1,6 @@
 import { safeStorage, safeIndexedDB } from './storage.js';
 import { sanitizeMeta } from './meta-store.js';
+import { targetForEncounter } from '../gameplay/progression.js';
 
 const DB_NAME='abyssal-hand-404';
 const DB_VERSION=1;
@@ -58,6 +59,10 @@ export function restoreRun(payload){
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
   state.encounter=safeNumber(raw.encounter,1,1,32);
+  if(state.campaignVersion>=2&&state.version<9){
+    state.targetScore=targetForEncounter(state.encounter,state.campaignVersion);
+    state.version=9;
+  }
   state.bossesDefeated=safeNumber(raw.bossesDefeated,0,0,8);
   state.echoes=safeNumber(raw.echoes,0,0,1e12);
   state.pendingReward=safeNumber(raw.pendingReward,0,0,1e12);

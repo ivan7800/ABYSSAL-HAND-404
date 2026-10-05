@@ -1,4 +1,11 @@
-# Estado de entrega — 1.0.0-rc.10
+# Estado de entrega — 1.0.0-rc.11
+
+## rc.11 — campaña alcanzable
+
+- [x] Ajustar objetivos de los 32 encuentros manteniendo la dificultad de jefes y élites.
+- [x] Migrar los objetivos de saves rc.9/rc.10 y conservar saves de 24 encuentros.
+- [x] Completar una expedición determinista con manos reales, ocho jefes y rutas variadas.
+- [ ] Recorrer la campaña en dispositivo real y ajustar el ritmo subjetivo.
 
 ## rc.10 — escenas específicas
 

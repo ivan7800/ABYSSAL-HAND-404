@@ -1,4 +1,4 @@
-# ABYSSAL HAND 404 — 1.0.0-rc.10 ESCENAS DE PRESAGIO
+# ABYSSAL HAND 404 — 1.0.0-rc.11 RITMO DE CAMPAÑA
 
 Roguelike de cartas y horror cósmico. Frontend estático, sin servicios ni dependencias remotas durante el juego.
 
@@ -15,6 +15,13 @@ En la primera expedición, la guía se abre automáticamente. Al cerrarla, la el
 También puedes ejecutar `python server.py` o `INICIAR.bat` (Python necesario solo para ese servidor). Para instalar como PWA se necesita HTTPS o localhost. En modo local no hay instalación PWA; sí se puede jugar y exportar/importar.
 
 El guardado depende de los permisos del navegador. Si el almacenamiento está bloqueado, se puede seguir jugando y exportar JSON. El mensaje de guardado muestra la situación real.
+
+## Qué incluye rc.11
+
+- Objetivos ajustados a la campaña de 32 encuentros; el último jefe pide 992 Ecos en lugar de 5636.
+- Un save de rc.9/rc.10 en curso recibe el nuevo objetivo al cargarse y conserva cartas, Ecos, ruta y progreso.
+- Las partidas antiguas de 24 encuentros mantienen sus objetivos originales.
+- Un recorrido determinista con manos reales completa la campaña y sus ocho jefes; no se inyectan puntos.
 
 ## Qué incluye rc.10
 
@@ -78,8 +85,8 @@ Al modificar `js/`, regenera siempre `js/app.bundle.js`. El empaquetador soporta
 
 ## Publicar
 
-Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.10 · ESCENAS DE PRESAGIO`.
+Sube el **contenido de la carpeta** `abyssal-hand-404` a la raíz del repositorio. Activa GitHub Pages para la rama elegida y `/ (root)`. No publiques el ZIP como si fuera la página. Comprueba que el pie muestra `v1.0.0-rc.11 · RITMO DE CAMPAÑA`.
 
 ## Alcance
 
-Sigue siendo una RC: se ha verificado el funcionamiento descrito en Chromium, pero no se ha certificado Safari/iPhone ni el diálogo nativo de instalación PWA. La campaña ampliada tiene pruebas automatizadas de progresión y compatibilidad; todavía falta recorrer los 32 encuentros manualmente para validar el equilibrio y duración percibida.
+Sigue siendo una RC: se ha verificado el funcionamiento descrito en Chromium, pero no se ha certificado Safari/iPhone ni el diálogo nativo de instalación PWA. La campaña ampliada tiene una prueba completa y una simulación de 100 expediciones; todavía falta recorrerla manualmente para juzgar su ritmo y probar Safari/iPhone.

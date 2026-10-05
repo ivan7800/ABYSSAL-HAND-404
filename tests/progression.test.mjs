@@ -5,8 +5,10 @@ import { buyItem, acceptPact, resolveEvent, resolveSanctuary, continueFromNode, 
 
 const fixed=()=>0.123456;
 assert.equal(targetForEncounter(1),300);
-assert.equal(targetForEncounter(3),550);
-assert.equal(targetForEncounter(4),911);
+assert.equal(targetForEncounter(3),334);
+assert.equal(targetForEncounter(4),421);
+assert.equal(targetForEncounter(32),992);
+assert.equal(targetForEncounter(3,1),743);
 let state=newRun(fixed);
 assert.equal(makeRouteOptions(state).length,4);
 assert.equal(rewardForEncounter(state),11);

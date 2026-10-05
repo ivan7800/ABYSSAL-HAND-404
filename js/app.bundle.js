@@ -48,7 +48,7 @@ return {SUITS,RANKS,createDeck,shuffle,draw};
 const m1=(()=>{
 function createInitialState() {
   return {
-    version: 8,
+    version: 9,
     campaignVersion: 2,
     seed: '',
     targetScore: 300,
@@ -353,8 +353,13 @@ const ROUTE_TABLE = [
 
 function targetForEncounter(encounter,campaignVersion=2) {
   const zone=zoneForEncounter(encounter,campaignVersion);
-  const base=300 + Math.max(0, encounter - 1) * 125;
-  return Math.round(base * (zone.isBoss?1.35:zone.isElite?1.15:1));
+  if(campaignVersion<2){
+    const base=300+Math.max(0,encounter-1)*125;
+    return Math.round(base*(zone.isBoss?1.35:zone.isElite?1.15:1));
+  }
+  // A 32-battle campaign needs a target a strong hand can actually reach.
+  const base=300+Math.max(0,encounter-1)*17;
+  return Math.round(base*(zone.isBoss?1.2:zone.isElite?1.1:1));
 }
 
 function makeRouteOptions(state) {
@@ -716,6 +721,7 @@ return {defaultMeta,sanitizeMeta,loadMeta,saveMeta,addUnlock,commitRun};
 const m16=(()=>{
 const { safeStorage, safeIndexedDB }=m14;
 const { sanitizeMeta }=m15;
+const { targetForEncounter }=m8;
 const DB_NAME='abyssal-hand-404';
 const DB_VERSION=1;
 const STORE='runs';
@@ -773,6 +779,10 @@ function restoreRun(payload){
   state.madness=safeNumber(raw.madness,0,0,100);
   state.turn=safeNumber(raw.turn,0,0,1e7);
   state.encounter=safeNumber(raw.encounter,1,1,32);
+  if(state.campaignVersion>=2&&state.version<9){
+    state.targetScore=targetForEncounter(state.encounter,state.campaignVersion);
+    state.version=9;
+  }
   state.bossesDefeated=safeNumber(raw.bossesDefeated,0,0,8);
   state.echoes=safeNumber(raw.echoes,0,0,1e12);
   state.pendingReward=safeNumber(raw.pendingReward,0,0,1e12);
@@ -896,7 +906,7 @@ return {pulseEffect,setFxMode};
 })();
 // js/pwa/pwa.js
 const m19=(()=>{
-const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.10-event-art';
+const PWA_CACHE='abyssal-hand-404-v1.0.0-rc.11-campaign-balance';
 function supportsServiceWorker(nav=globalThis.navigator){return Boolean(nav&&'serviceWorker' in nav);}
 function isStandalone({matchMediaImpl=globalThis.matchMedia,navigatorObj=globalThis.navigator}={}){return Boolean(matchMediaImpl?.('(display-mode: standalone)')?.matches||navigatorObj?.standalone);}
 async function registerPwa({nav=globalThis.navigator,onUpdate=()=>{}}={}){

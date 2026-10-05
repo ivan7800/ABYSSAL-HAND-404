@@ -15,7 +15,8 @@ assert.equal(zoneForEncounter(32).boss.id,'the-gate');
 assert.equal(zoneForEncounter(3,1).isBoss,true);assert.equal(zoneForEncounter(4,1).name,'BIBLIOTECA SUMERGIDA');
 assert.match(battleLabel(4),/BOSS/);
 assert.ok(targetForEncounter(2)>targetForEncounter(1));
-assert.ok(targetForEncounter(3)>targetForEncounter(2));
+assert.ok(targetForEncounter(3)>targetForEncounter(1));
+assert.ok(targetForEncounter(4)>targetForEncounter(2));
 
 const base={base:20,mult:2,score:40,madnessCost:1,name:'Pareja'};
 let state=newRun(()=>0.2);

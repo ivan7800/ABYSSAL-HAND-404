@@ -18,8 +18,13 @@ const ROUTE_TABLE = [
 
 export function targetForEncounter(encounter,campaignVersion=2) {
   const zone=zoneForEncounter(encounter,campaignVersion);
-  const base=300 + Math.max(0, encounter - 1) * 125;
-  return Math.round(base * (zone.isBoss?1.35:zone.isElite?1.15:1));
+  if(campaignVersion<2){
+    const base=300+Math.max(0,encounter-1)*125;
+    return Math.round(base*(zone.isBoss?1.35:zone.isElite?1.15:1));
+  }
+  // A 32-battle campaign needs a target a strong hand can actually reach.
+  const base=300+Math.max(0,encounter-1)*17;
+  return Math.round(base*(zone.isBoss?1.2:zone.isElite?1.1:1));
 }
 
 export function makeRouteOptions(state) {

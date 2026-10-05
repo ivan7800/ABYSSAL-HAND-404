@@ -1,5 +1,12 @@
 # Historial
 
+## 1.0.0-rc.11 — RITMO DE CAMPAÑA
+
+- La curva de objetivos de la campaña de 32 encuentros se hizo alcanzable mediante juego normal; el jefe final pasa de 5636 a 992 Ecos.
+- Un recorrido determinista de la campaña llega a la victoria con los ocho jefes y las decisiones de tienda, pacto, evento y refugio.
+- Saves rc.9/rc.10 migran su objetivo al restaurarse sin perder puntuación ni estado; saves de 24 encuentros conservan su curva anterior.
+- Se regeneran bundle, referencias y caché PWA para distribuir el ajuste.
+
 ## 1.0.0-rc.10 — ESCENAS DE PRESAGIO
 
 - Ocho relatos de la campaña expandida tienen ahora una ilustración distinta, integrada por ID de evento.
